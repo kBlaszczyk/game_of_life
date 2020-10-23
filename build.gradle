@@ -1,0 +1,82 @@
+plugins {
+    id "application"
+    id "idea"
+}
+
+println """
+	|- $project.title -
+    |Description: $project.description
+	|Vendor: $project.vendor
+	|Group: $project.group
+	|
+	|Gradle version: $gradle.gradleVersion
+	|Gradle home: $gradle.gradleHomeDir
+	|Gradle user directory: $gradle.gradleUserHomeDir
+	|Running script: ${relativePath(buildFile)}
+""".stripMargin()
+
+group project.group
+version project.version
+
+sourceCompatibility = project.jdkVersion
+targetCompatibility = project.jdkVersion
+mainClassName = project.mainClass
+
+// -------------------------------------------------------------
+// --- Repositories and Dependencies ---------------------------
+// -------------------------------------------------------------
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "info.picocli:picocli:4.5.1"
+    compile "org.processing:core:3.3.7"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$project.junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$project.junitVersion"
+
+    testImplementation "org.mockito:mockito-core:$project.mockitoVersion"
+    testImplementation "org.mockito:mockito-junit-jupiter:$project.mockitoVersion"
+}
+
+// -------------------------------------------------------------
+// --- Tasks ---------------------------------------------------
+// -------------------------------------------------------------
+
+task fatJar(type: Jar) {
+    baseName = "$project.name-fat"
+
+    manifest {
+        attributes "Main-Class": project.mainClass
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    } with jar
+
+    configure {
+        group = "build"
+        description = "Generate an executable jar."
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+wrapper {
+    gradleVersion = "6.5"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+idea {
+    module {
+        jdkName = project.jdkVersion
+        downloadJavadoc = true
+        downloadSources = true
+
+        iml {}
+    }
+}
