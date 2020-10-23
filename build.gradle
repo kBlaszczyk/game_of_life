@@ -31,6 +31,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     compile "info.picocli:picocli:4.5.1"
     compile "org.processing:core:3.3.7"
 
