@@ -13,6 +13,9 @@ public class GameOfLifeApplet extends PApplet {
 	private long frameDuration = 200_000_000L;
 	private long updateTimestamp = System.nanoTime();
 
+	private int viewOffsetX = 0;
+	private int viewOffsetY = 0;
+
 	public GameOfLifeApplet(Board board) {
 		this.board = board;
  		this.boardRenderer = new BoardRenderer(board, this);
@@ -32,12 +35,23 @@ public class GameOfLifeApplet extends PApplet {
 	public void draw() {
 		tick();
 
-		background(200);
+		background(0);
 
 		pushMatrix();
+
+		translate(viewOffsetX, viewOffsetY);
 		scale(20f);
 		boardRenderer.render();
+
 		popMatrix();
+	}
+
+	@Override
+	public void mouseDragged() {
+		if (mouseButton == LEFT) {
+			viewOffsetX += mouseX - pmouseX;
+			viewOffsetY += mouseY - pmouseY;
+		}
 	}
 
 	@Override
