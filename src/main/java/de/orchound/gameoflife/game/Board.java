@@ -35,8 +35,8 @@ public class Board {
 
 	private int countLivingNeighbors(int rowIndex, int cellIndex) {
 
-		int height = source.length;
-		int width = source[0].length;
+		final int height = source.length;
+		final int width = source[0].length;
 		int livingNeighborsCount = 0;
 
 		for (int xOffset = -1; xOffset <= 1; xOffset++) {
@@ -54,11 +54,8 @@ public class Board {
 	}
 
 	private boolean determineCellStatus(boolean cell, int livingNeighborsCount) {
-		if (cell) {
-			return livingNeighborsCount >= 2 && livingNeighborsCount <= 3;
-		} else {
-			return livingNeighborsCount == 3;
-		}
+		return cell ? livingNeighborsCount >= 2 && livingNeighborsCount <= 3 :
+			livingNeighborsCount == 3;
 	}
 
 	public void setCellAlive(int rowIndex, int cellIndex) {
