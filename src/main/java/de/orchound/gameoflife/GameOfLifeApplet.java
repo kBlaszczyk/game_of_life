@@ -13,8 +13,10 @@ public class GameOfLifeApplet extends PApplet {
 	private long frameDuration = 200_000_000L;
 	private long updateTimestamp = System.nanoTime();
 
-	private int viewOffsetX = 0;
-	private int viewOffsetY = 0;
+	private final int windowWidth = 1280;
+	private final int windowHeight = 720;
+	private float viewOffsetX = windowWidth / 2f;
+	private float viewOffsetY = windowHeight / 2f;
 
 	public GameOfLifeApplet(Board board) {
 		this.board = board;
@@ -28,7 +30,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	@Override
 	public void settings() {
-		size(1280, 720);
+		size(windowWidth, windowHeight);
 	}
 
 	@Override
@@ -59,6 +61,7 @@ public class GameOfLifeApplet extends PApplet {
 		switch (key) {
 		case '+' -> increaseSpeed();
 		case '-' -> decreaseSpeed();
+		case 'c' -> resetView();
 		}
 	}
 
@@ -72,6 +75,11 @@ public class GameOfLifeApplet extends PApplet {
 			update();
 			updateTimestamp = currentTimestamp;
 		}
+	}
+
+	private void resetView() {
+		viewOffsetX = windowWidth / 2f;
+		viewOffsetY = windowHeight / 2f;
 	}
 
 	private void increaseSpeed() {

@@ -8,9 +8,15 @@ public class BoardRenderer {
 	private final Board board;
 	private final PApplet sketch;
 
+	private final float halfBoardWidth;
+	private final float halfBoardHeight;
+
 	public BoardRenderer(Board board, PApplet sketch) {
 		this.board = board;
 		this.sketch = sketch;
+
+		halfBoardWidth = board.width / 2f;
+		halfBoardHeight = board.height / 2f;
 	}
 
 	public void render() {
@@ -33,7 +39,7 @@ public class BoardRenderer {
 		sketch.pushMatrix();
 		sketch.pushStyle();
 
-		sketch.translate((float) y, (float) x);
+		sketch.translate(y - halfBoardWidth, x - halfBoardHeight);
 		sketch.fill(115f, 210f, 22f);
 		sketch.rect(0.05f, 0.05f, 0.9f, 0.9f);
 
