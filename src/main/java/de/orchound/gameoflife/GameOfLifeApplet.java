@@ -3,6 +3,7 @@ package de.orchound.gameoflife;
 import de.orchound.gameoflife.game.Board;
 import de.orchound.gameoflife.rendering.BoardRenderer;
 import processing.core.PApplet;
+import processing.event.MouseEvent;
 
 public class GameOfLifeApplet extends PApplet {
 
@@ -17,6 +18,8 @@ public class GameOfLifeApplet extends PApplet {
 	private final int windowHeight = 720;
 	private float viewOffsetX = windowWidth / 2f;
 	private float viewOffsetY = windowHeight / 2f;
+
+	private float scale = 20f;
 
 	public GameOfLifeApplet(Board board) {
 		this.board = board;
@@ -42,7 +45,7 @@ public class GameOfLifeApplet extends PApplet {
 		pushMatrix();
 
 		translate(viewOffsetX, viewOffsetY);
-		scale(20f);
+		scale(scale);
 		boardRenderer.render();
 
 		popMatrix();
@@ -59,10 +62,15 @@ public class GameOfLifeApplet extends PApplet {
 	@Override
 	public void keyPressed() {
 		switch (key) {
-		case '+' -> increaseSpeed();
-		case '-' -> decreaseSpeed();
+		case '+' -> changeSpeed(frameDuration - frameDurationIncrement);
+		case '-' -> changeSpeed(frameDuration + frameDurationIncrement);
 		case 'c' -> resetView();
 		}
+	}
+
+	@Override
+	public void mouseWheel(MouseEvent event) {
+		scale = constrain(scale - event.getCount() * 0.5f, 1f, 40f);
 	}
 
 	private void update() {
@@ -82,11 +90,7 @@ public class GameOfLifeApplet extends PApplet {
 		viewOffsetY = windowHeight / 2f;
 	}
 
-	private void increaseSpeed() {
-		frameDuration = Math.max(frameDuration - frameDurationIncrement, 100_000_000L);
-	}
-
-	private void decreaseSpeed() {
-		frameDuration = Math.min(frameDuration + frameDurationIncrement, 1_000_000_000L);
+	private void changeSpeed(long target) {
+		frameDuration = Math.max(100_000_000L, Math.min(1_000_000_000L, target));
 	}
 }
