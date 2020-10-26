@@ -11,8 +11,9 @@ public class GameOfLifeApplet extends PApplet {
 	private final BoardRenderer boardRenderer;
 
 	private final long frameDurationIncrement = 100_000_000L;
-	private long frameDuration = 200_000_000L;
-	private long updateTimestamp = System.nanoTime();
+	private long gameTimeAccumulator = 0L;
+	private long gameFrameTime = 200_000_000L;
+	private long previousTimestamp = System.nanoTime();
 
 	private final int windowWidth = 1280;
 	private final int windowHeight = 720;
@@ -20,8 +21,8 @@ public class GameOfLifeApplet extends PApplet {
 	private float viewOffsetY = windowHeight / 2f;
 
 	private float scale;
-	private float minScale;
-	private float maxScale;
+	private final float minScale;
+	private final float maxScale;
 
 	public GameOfLifeApplet(Board board) {
 		this.board = board;
@@ -67,8 +68,8 @@ public class GameOfLifeApplet extends PApplet {
 	@Override
 	public void keyPressed() {
 		switch (key) {
-		case '+' -> changeSpeed(frameDuration - frameDurationIncrement);
-		case '-' -> changeSpeed(frameDuration + frameDurationIncrement);
+		case '+' -> changeSpeed(gameFrameTime - frameDurationIncrement);
+		case '-' -> changeSpeed(gameFrameTime + frameDurationIncrement);
 		case 'c' -> resetView();
 		}
 	}
@@ -84,9 +85,12 @@ public class GameOfLifeApplet extends PApplet {
 
 	private void tick() {
 		long currentTimestamp = System.nanoTime();
-		if (currentTimestamp - updateTimestamp > frameDuration) {
+		gameTimeAccumulator += currentTimestamp - previousTimestamp;
+		previousTimestamp = currentTimestamp;
+
+		while (gameTimeAccumulator >= gameFrameTime) {
 			update();
-			updateTimestamp = currentTimestamp;
+			gameTimeAccumulator -= gameFrameTime;
 		}
 	}
 
@@ -97,7 +101,7 @@ public class GameOfLifeApplet extends PApplet {
 	}
 
 	private void changeSpeed(long target) {
-		frameDuration = Math.max(100_000_000L, Math.min(1_000_000_000L, target));
+		gameFrameTime = Math.max(50_000_000L, Math.min(1_000_000_000L, target));
 	}
 
 	private float getInitialScale(int boardWidth, int boardHeight, int screenWidth, int screenHeight) {
