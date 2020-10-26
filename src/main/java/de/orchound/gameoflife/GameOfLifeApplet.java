@@ -19,11 +19,16 @@ public class GameOfLifeApplet extends PApplet {
 	private float viewOffsetX = windowWidth / 2f;
 	private float viewOffsetY = windowHeight / 2f;
 
-	private float scale = 20f;
+	private float scale;
+	private float minScale;
+	private float maxScale;
 
 	public GameOfLifeApplet(Board board) {
 		this.board = board;
  		this.boardRenderer = new BoardRenderer(board, this);
+		maxScale = 40f;
+		scale = min(maxScale, getInitialScale(board.width, board.height, windowWidth, windowHeight));
+		minScale = min(1f, scale);
 	}
 
 	@Override
@@ -70,7 +75,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	@Override
 	public void mouseWheel(MouseEvent event) {
-		scale = constrain(scale - event.getCount() * 0.5f, 1f, 40f);
+		scale = constrain(scale - event.getCount() * 0.5f, minScale, maxScale);
 	}
 
 	private void update() {
@@ -88,9 +93,14 @@ public class GameOfLifeApplet extends PApplet {
 	private void resetView() {
 		viewOffsetX = windowWidth / 2f;
 		viewOffsetY = windowHeight / 2f;
+		scale = getInitialScale(board.width, board.height, windowWidth, windowHeight);
 	}
 
 	private void changeSpeed(long target) {
 		frameDuration = Math.max(100_000_000L, Math.min(1_000_000_000L, target));
+	}
+
+	private float getInitialScale(int boardWidth, int boardHeight, int screenWidth, int screenHeight) {
+		return min((float) screenWidth / boardWidth, (float) screenHeight / boardHeight);
 	}
 }
