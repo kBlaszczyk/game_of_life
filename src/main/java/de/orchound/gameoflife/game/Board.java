@@ -39,9 +39,6 @@ public class Board {
 	}
 
 	private int countLivingNeighbors(int rowIndex, int cellIndex) {
-
-		final int height = source.length;
-		final int width = source[0].length;
 		int livingNeighborsCount = 0;
 
 		for (int xOffset = -1; xOffset <= 1; xOffset++) {
