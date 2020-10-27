@@ -39,19 +39,14 @@ public class Board {
 	}
 
 	private int countLivingNeighbors(int rowIndex, int cellIndex) {
-
-		final int height = source.length;
-		final int width = source[0].length;
 		int livingNeighborsCount = 0;
 
 		for (int xOffset = -1; xOffset <= 1; xOffset++) {
 			for (int yOffset = - 1; yOffset <= 1; yOffset++) {
 				if (!(xOffset == 0 && yOffset == 0)) {
-					int neighborX = cellIndex + xOffset;
-					int neighborY = rowIndex + yOffset;
-					if (neighborX >= 0 && neighborX < width && neighborY >= 0 && neighborY < height) {
-						livingNeighborsCount += source[neighborY][neighborX] ? 1 : 0;
-					}
+					int neighborX = Math.floorMod(cellIndex + xOffset, width);
+					int neighborY = Math.floorMod(rowIndex + yOffset, height);
+					livingNeighborsCount += source[neighborY][neighborX] ? 1 : 0;
 				}
 			}
 		}

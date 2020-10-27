@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
 
-	Board board = new Board(5, 5);
+	Board board = new Board(20, 10);
 
 	@BeforeEach
 	void setUp() {
@@ -38,5 +38,46 @@ class BoardTest {
 
 		assertFalse(board.target[1][2]);
 		assertFalse(board.target[3][2]);
+	}
+
+
+	/**
+	 * Verifies that values on the right edge of the board are treated as neighbors to values on the left edge of the
+	 * board.
+	 */
+	@Test
+	void testHorizontalWrapping() {
+		board.setCellAlive(1, 0);
+		board.setCellAlive(2, 0);
+		board.setCellAlive(3, 0);
+
+		board.update();
+
+		assertTrue(board.target[2][19]);
+		assertTrue(board.target[2][0]);
+		assertTrue(board.target[2][1]);
+
+		assertFalse(board.target[1][0]);
+		assertFalse(board.target[3][0]);
+	}
+
+	/**
+	 * Verifies that values on the top edge of the board are treated as neighbors to values on the bottom edge of the
+	 * board.
+	 */
+	@Test
+	void testVerticalWrapping() {
+		board.setCellAlive(9, 1);
+		board.setCellAlive(9, 2);
+		board.setCellAlive(9, 3);
+
+		board.update();
+
+		assertTrue(board.target[8][2]);
+		assertTrue(board.target[9][2]);
+		assertTrue(board.target[0][2]);
+
+		assertFalse(board.target[9][1]);
+		assertFalse(board.target[9][3]);
 	}
 }
