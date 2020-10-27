@@ -2,6 +2,8 @@ package de.orchound.gameoflife.rendering;
 
 import de.orchound.gameoflife.game.Board;
 import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PImage;
 
 public class BoardRenderer {
 
@@ -11,39 +13,36 @@ public class BoardRenderer {
 	private final float halfBoardWidth;
 	private final float halfBoardHeight;
 
+	private final PImage boardRepresentation;
+	private final int setColor;
+	private final int unsetColor;
+
 	public BoardRenderer(Board board, PApplet sketch) {
 		this.board = board;
-		this.sketch = sketch;
-
 		halfBoardWidth = board.width / 2f;
 		halfBoardHeight = board.height / 2f;
+
+		this.sketch = sketch;
+		setColor = sketch.color(115, 210, 22);
+		unsetColor = sketch.color(0);
+
+		boardRepresentation = sketch.createImage(board.width, board.height, PConstants.RGB);
+		update();
 	}
 
 	public void render() {
-		sketch.pushStyle();
-		sketch.strokeWeight(0f);
-
-		boolean[][] data = board.target;
-		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < data[0].length; j++) {
-				if (data[i][j]) {
-					drawCell(i, j);
-				}
-			}
-		}
-
-		sketch.popStyle();
+		sketch.image(boardRepresentation, -halfBoardWidth, -halfBoardHeight);
 	}
 
-	private void drawCell(int x, int y) {
-		sketch.pushMatrix();
-		sketch.pushStyle();
+	public void update() {
+		boolean[] data = board.target;
 
-		sketch.translate(y - halfBoardWidth, x - halfBoardHeight);
-		sketch.fill(115f, 210f, 22f);
-		sketch.rect(0.05f, 0.05f, 0.9f, 0.9f);
+		boardRepresentation.loadPixels();
 
-		sketch.popStyle();
-		sketch.popMatrix();
+		for (int i = 0; i < data.length; i++) {
+			boardRepresentation.pixels[i] = data[i] ? setColor : unsetColor;
+		}
+
+		boardRepresentation.updatePixels();
 	}
 }

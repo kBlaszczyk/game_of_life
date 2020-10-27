@@ -40,6 +40,7 @@ public class GameOfLifeApplet extends PApplet {
 	@Override
 	public void settings() {
 		size(windowWidth, windowHeight);
+		noSmooth();
 	}
 
 	@Override
@@ -81,6 +82,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	private void update() {
 		board.update();
+		boardRenderer.update();
 	}
 
 	private void tick() {
