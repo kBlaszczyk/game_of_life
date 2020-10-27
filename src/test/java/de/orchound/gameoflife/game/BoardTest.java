@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
 
-	Board board = new Board(5, 5);
+	Board board = new Board(20, 10);
 
 	@BeforeEach
 	void setUp() {
@@ -53,7 +53,7 @@ class BoardTest {
 
 		board.update();
 
-		assertTrue(board.target[2][4]);
+		assertTrue(board.target[2][19]);
 		assertTrue(board.target[2][0]);
 		assertTrue(board.target[2][1]);
 
@@ -67,13 +67,6 @@ class BoardTest {
 	 */
 	@Test
 	void testVerticalWrapping() {
-		Board board = new Board(20, 10);
-		for (int i = 0; i < board.target.length; i++) {
-			for (int j = 0; j < board.target[0].length; j++) {
-				board.target[i][j] = false;
-			}
-		}
-
 		board.setCellAlive(9, 1);
 		board.setCellAlive(9, 2);
 		board.setCellAlive(9, 3);
