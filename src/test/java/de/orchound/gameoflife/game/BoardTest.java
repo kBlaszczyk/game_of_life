@@ -40,6 +40,11 @@ class BoardTest {
 		assertFalse(board.target[3][2]);
 	}
 
+
+	/**
+	 * Verifies that values on the right edge of the board are treated as neighbors to values on the left edge of the
+	 * board.
+	 */
 	@Test
 	void testHorizontalWrapping() {
 		board.setCellAlive(1, 0);
@@ -54,12 +59,13 @@ class BoardTest {
 
 		assertFalse(board.target[1][0]);
 		assertFalse(board.target[3][0]);
-
-		/*
-		* verify that the right edge is treated as a neighbor to the left edge
-		*/
 	}
 
+	/**
+	 * Verifies that values on the top edge of the board are treated as neighbors to values on the bottom edge of the
+	 * board.
+	 */
+	@Test
 	void testVerticalWrapping() {
 		Board board = new Board(20, 10);
 		for (int i = 0; i < board.target.length; i++) {
@@ -80,9 +86,5 @@ class BoardTest {
 
 		assertFalse(board.target[9][1]);
 		assertFalse(board.target[9][3]);
-
-		/*
-		 * verify that the top row is treated as neighbors to the bottom row
-		 */
 	}
 }
