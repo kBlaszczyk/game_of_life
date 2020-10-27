@@ -44,8 +44,8 @@ public class Board {
 		for (int xOffset = -1; xOffset <= 1; xOffset++) {
 			for (int yOffset = - 1; yOffset <= 1; yOffset++) {
 				if (!(xOffset == 0 && yOffset == 0)) {
-					int neighborX = (cellIndex + xOffset + width) % width;
-					int neighborY = (rowIndex + yOffset + width) % height;
+					int neighborX = Math.floorMod(cellIndex + xOffset, width);
+					int neighborY = Math.floorMod(rowIndex + yOffset, height);
 					livingNeighborsCount += source[neighborY][neighborX] ? 1 : 0;
 				}
 			}
