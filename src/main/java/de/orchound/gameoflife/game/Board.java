@@ -7,33 +7,32 @@ public class Board {
 	public final int width;
 	public final int height;
 
-	public boolean[][] target;
-	private boolean[][] source;
+	public boolean[] target;
+	private boolean[] source;
 
 	public Board(int width, int height) {
 		this.width = width;
 		this.height = height;
-		source = new boolean[height][width];
-		target = new boolean[height][width];
+		source = new boolean[width * height];
+		target = new boolean[width * height];
 
 		Random random = new Random();
 
 		for (int i = 0; i < target.length; i++) {
-			for (int j = 0; j < target[0].length; j++) {
-				target[i][j] = random.nextBoolean();
-			}
+			target[i] = random.nextBoolean();
 		}
 	}
 
 	public void update() {
-		boolean[][] temp = source;
+		boolean[] temp = source;
 		source = target;
 		target = temp;
 
-		for (int i = 0; i < target.length; i++) {
-			for (int j = 0; j < target[0].length; j++) {
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
 				int livingNeighborsCount = countLivingNeighbors(i, j);
-				target[i][j] = determineCellStatus(source[i][j], livingNeighborsCount);
+				boolean sourceCell = source[i * width + j];
+				target[i * width + j] = determineCellStatus(sourceCell, livingNeighborsCount);
 			}
 		}
 	}
@@ -46,7 +45,7 @@ public class Board {
 				if (!(xOffset == 0 && yOffset == 0)) {
 					int neighborX = Math.floorMod(cellIndex + xOffset, width);
 					int neighborY = Math.floorMod(rowIndex + yOffset, height);
-					livingNeighborsCount += source[neighborY][neighborX] ? 1 : 0;
+					livingNeighborsCount += source[neighborY * width + neighborX] ? 1 : 0;
 				}
 			}
 		}
@@ -58,7 +57,15 @@ public class Board {
 			livingNeighborsCount == 3;
 	}
 
-	public void setCellAlive(int rowIndex, int cellIndex) {
-		target[rowIndex][cellIndex] = true;
+	public boolean getCellStatus(int rowIndex, int cellIndex) {
+		return target[rowIndex * width + cellIndex];
+	}
+
+	public void resurrectCell(int rowIndex, int cellIndex) {
+		target[rowIndex * width + cellIndex] = true;
+	}
+
+	public void killCell(int rowIndex, int cellIndex) {
+		target[rowIndex * width + cellIndex] = false;
 	}
 }

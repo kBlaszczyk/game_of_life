@@ -3,6 +3,8 @@ package de.orchound.gameoflife.game;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
@@ -11,33 +13,39 @@ class BoardTest {
 
 	@BeforeEach
 	void setUp() {
-		for (int i = 0; i < board.target.length; i++) {
-			for (int j = 0; j < board.target[0].length; j++) {
-				board.target[i][j] = false;
-			}
-		}
+		Arrays.fill(board.target, false);
 	}
 
 	@Test
 	void testSetCellAlive() {
-		board.setCellAlive(1, 0);
-		assertTrue(board.target[1][0]);
+		board.resurrectCell(1, 0);
+		assertTrue(board.getCellStatus(1, 0));
 	}
 
 	@Test
 	void testUpdate() {
-		board.setCellAlive(1, 2);
-		board.setCellAlive(2, 2);
-		board.setCellAlive(3, 2);
+		board.resurrectCell(1, 2);
+		board.resurrectCell(2, 2);
+		board.resurrectCell(3, 2);
 
 		board.update();
 
-		assertTrue(board.target[2][1]);
-		assertTrue(board.target[2][2]);
-		assertTrue(board.target[2][3]);
+		assertTrue(board.getCellStatus(2, 1));
+		assertTrue(board.getCellStatus(2, 2));
+		assertTrue(board.getCellStatus(2, 3));
 
-		assertFalse(board.target[1][2]);
-		assertFalse(board.target[3][2]);
+		assertFalse(board.getCellStatus(1, 2));
+		assertFalse(board.getCellStatus(3, 2));
+	}
+
+	@Test
+	void testTwoCellsDie() {
+		board.resurrectCell(1, 1);
+		board.resurrectCell(1, 2);
+
+		board.update();
+
+		assertArrayEquals(board.target, new boolean[board.target.length]);
 	}
 
 
@@ -47,18 +55,18 @@ class BoardTest {
 	 */
 	@Test
 	void testHorizontalWrapping() {
-		board.setCellAlive(1, 0);
-		board.setCellAlive(2, 0);
-		board.setCellAlive(3, 0);
+		board.resurrectCell(1, 0);
+		board.resurrectCell(2, 0);
+		board.resurrectCell(3, 0);
 
 		board.update();
 
-		assertTrue(board.target[2][19]);
-		assertTrue(board.target[2][0]);
-		assertTrue(board.target[2][1]);
+		assertTrue(board.getCellStatus(2, 19));
+		assertTrue(board.getCellStatus(2, 0));
+		assertTrue(board.getCellStatus(2, 1));
 
-		assertFalse(board.target[1][0]);
-		assertFalse(board.target[3][0]);
+		assertFalse(board.getCellStatus(1, 0));
+		assertFalse(board.getCellStatus(3, 0));
 	}
 
 	/**
@@ -67,17 +75,17 @@ class BoardTest {
 	 */
 	@Test
 	void testVerticalWrapping() {
-		board.setCellAlive(9, 1);
-		board.setCellAlive(9, 2);
-		board.setCellAlive(9, 3);
+		board.resurrectCell(9, 1);
+		board.resurrectCell(9, 2);
+		board.resurrectCell(9, 3);
 
 		board.update();
 
-		assertTrue(board.target[8][2]);
-		assertTrue(board.target[9][2]);
-		assertTrue(board.target[0][2]);
+		assertTrue(board.getCellStatus(8, 2));
+		assertTrue(board.getCellStatus(9, 2));
+		assertTrue(board.getCellStatus(0, 2));
 
-		assertFalse(board.target[9][1]);
-		assertFalse(board.target[9][3]);
+		assertFalse(board.getCellStatus(9, 1));
+		assertFalse(board.getCellStatus(9, 3));
 	}
 }
