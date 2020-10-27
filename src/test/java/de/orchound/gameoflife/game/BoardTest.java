@@ -41,9 +41,7 @@ class BoardTest {
 	}
 
 	@Test
-	void testUpdateWrapBoard() {
-		// verify that the top row is treated as neighbors to the bottom row, and the right edge is treated as a
-		// neighbor to the left edge
+	void testHorizontalWrapping() {
 		board.setCellAlive(1, 0);
 		board.setCellAlive(2, 0);
 		board.setCellAlive(3, 0);
@@ -56,5 +54,9 @@ class BoardTest {
 
 		assertFalse(board.target[1][0]);
 		assertFalse(board.target[3][0]);
+
+		/*
+		* verify that the right edge is treated as a neighbor to the left edge
+		*/
 	}
 }
