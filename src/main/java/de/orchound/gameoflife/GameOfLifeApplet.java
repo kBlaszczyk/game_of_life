@@ -14,6 +14,7 @@ public class GameOfLifeApplet extends PApplet {
 	private long gameTimeAccumulator = 0L;
 	private long gameFrameTime = 200_000_000L;
 	private long previousTimestamp = System.nanoTime();
+	private boolean paused = false;
 
 	private final int windowWidth = 1280;
 	private final int windowHeight = 720;
@@ -69,6 +70,7 @@ public class GameOfLifeApplet extends PApplet {
 	@Override
 	public void keyPressed() {
 		switch (key) {
+		case ' ' -> togglePauseSimulation();
 		case '+' -> changeSpeed(gameFrameTime - frameDurationIncrement);
 		case '-' -> changeSpeed(gameFrameTime + frameDurationIncrement);
 		case 'c' -> resetView();
@@ -87,7 +89,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	private void tick() {
 		long currentTimestamp = System.nanoTime();
-		gameTimeAccumulator += currentTimestamp - previousTimestamp;
+		gameTimeAccumulator += paused ? 0L : currentTimestamp - previousTimestamp;
 		previousTimestamp = currentTimestamp;
 
 		while (gameTimeAccumulator >= gameFrameTime) {
@@ -100,6 +102,15 @@ public class GameOfLifeApplet extends PApplet {
 		viewOffsetX = windowWidth / 2f;
 		viewOffsetY = windowHeight / 2f;
 		scale = getInitialScale(board.width, board.height, windowWidth, windowHeight);
+	}
+
+	private void togglePauseSimulation() {
+		if (paused) {
+			paused = false;
+		} else {
+			gameTimeAccumulator = 0L;
+			paused = true;
+		}
 	}
 
 	private void changeSpeed(long target) {
