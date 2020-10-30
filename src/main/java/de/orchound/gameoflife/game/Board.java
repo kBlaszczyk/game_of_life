@@ -7,6 +7,7 @@ public class Board {
 	public final int width;
 	public final int height;
 
+	private boolean[] initial;
 	public boolean[] target;
 	private boolean[] source;
 
@@ -15,11 +16,17 @@ public class Board {
 		this.height = height;
 		source = new boolean[width * height];
 		target = new boolean[width * height];
+		randomize();
+	}
 
+	public void randomize() {
 		Random random = new Random();
 
 		for (int i = 0; i < target.length; i++) {
 			target[i] = random.nextBoolean();
+
+			// initial equals whatever target was, when it was randomized
+			initial = target.clone();
 		}
 	}
 
@@ -67,5 +74,9 @@ public class Board {
 
 	public void killCell(int rowIndex, int cellIndex) {
 		target[rowIndex * width + cellIndex] = false;
+	}
+
+	public void reset() {
+		target = initial.clone();
 	}
 }
