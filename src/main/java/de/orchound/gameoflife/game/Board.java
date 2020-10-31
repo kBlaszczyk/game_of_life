@@ -1,20 +1,23 @@
 package de.orchound.gameoflife.game;
 
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
+
 import java.util.Random;
 
 public class Board {
 
-	public final int width;
-	public final int height;
+	public final Vector2ic size;
 
 	public boolean[] target;
 	private boolean[] source;
 
 	public Board(int width, int height) {
-		this.width = width;
-		this.height = height;
-		source = new boolean[width * height];
-		target = new boolean[width * height];
+		size = new Vector2i(width, height);
+		int cellsCount = width * height;
+
+		source = new boolean[cellsCount];
+		target = new boolean[cellsCount];
 
 		Random random = new Random();
 
@@ -28,11 +31,11 @@ public class Board {
 		source = target;
 		target = temp;
 
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
+		for (int i = 0; i < size.y(); i++) {
+			for (int j = 0; j < size.x(); j++) {
 				int livingNeighborsCount = countLivingNeighbors(i, j);
-				boolean sourceCell = source[i * width + j];
-				target[i * width + j] = determineCellStatus(sourceCell, livingNeighborsCount);
+				boolean sourceCell = source[i * size.x() + j];
+				target[i * size.x() + j] = determineCellStatus(sourceCell, livingNeighborsCount);
 			}
 		}
 	}
@@ -43,9 +46,9 @@ public class Board {
 		for (int xOffset = -1; xOffset <= 1; xOffset++) {
 			for (int yOffset = - 1; yOffset <= 1; yOffset++) {
 				if (!(xOffset == 0 && yOffset == 0)) {
-					int neighborX = Math.floorMod(cellIndex + xOffset, width);
-					int neighborY = Math.floorMod(rowIndex + yOffset, height);
-					livingNeighborsCount += source[neighborY * width + neighborX] ? 1 : 0;
+					int neighborX = Math.floorMod(cellIndex + xOffset, size.x());
+					int neighborY = Math.floorMod(rowIndex + yOffset, size.y());
+					livingNeighborsCount += source[neighborY * size.x() + neighborX] ? 1 : 0;
 				}
 			}
 		}
@@ -58,14 +61,22 @@ public class Board {
 	}
 
 	public boolean getCellStatus(int rowIndex, int cellIndex) {
-		return target[rowIndex * width + cellIndex];
+		return target[rowIndex * size.x() + cellIndex];
 	}
 
-	public void resurrectCell(int rowIndex, int cellIndex) {
-		target[rowIndex * width + cellIndex] = true;
+	public void resurrectCell(int cellIndex, int rowIndex) {
+		target[rowIndex * size.x() + cellIndex] = true;
 	}
 
 	public void killCell(int rowIndex, int cellIndex) {
-		target[rowIndex * width + cellIndex] = false;
+		target[rowIndex * size.x() + cellIndex] = false;
+	}
+
+	public int getWidth() {
+		return size.x();
+	}
+
+	public int getHeight() {
+		return size.y();
 	}
 }
