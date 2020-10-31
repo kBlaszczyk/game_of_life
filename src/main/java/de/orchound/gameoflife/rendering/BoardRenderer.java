@@ -31,7 +31,6 @@ public class BoardRenderer {
 		unsetColor = sketch.color(0);
 
 		boardImage = sketch.createImage(board.getWidth(), board.getHeight(), PConstants.RGB);
-		update();
 	}
 
 	public void render() {

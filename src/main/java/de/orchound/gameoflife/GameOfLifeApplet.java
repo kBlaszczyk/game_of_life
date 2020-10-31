@@ -31,8 +31,11 @@ public class GameOfLifeApplet extends PApplet {
 
 	public GameOfLifeApplet(Board board) {
 		this.board = board;
- 		this.boardRenderer = new BoardRenderer(board, this);
-		maxScale = 40f;
+
+		boardRenderer = new BoardRenderer(board, this);
+ 		boardRenderer.update();
+
+ 		maxScale = 40f;
 		scale = min(maxScale, getInitialScale());
 		minScale = min(1f, scale);
 	}
@@ -82,7 +85,7 @@ public class GameOfLifeApplet extends PApplet {
 		Vector2i cell = boardRenderer.getCellAt(position, bufferVector2i);
 
 		if (cellInBoardRange(cell)) {
-			board.resurrectCell(cell.x, cell.y);
+			board.resurrectCell(cell.y, cell.x);
 			boardRenderer.update();
 		}
 	}

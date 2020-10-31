@@ -64,7 +64,7 @@ public class Board {
 		return target[rowIndex * size.x() + cellIndex];
 	}
 
-	public void resurrectCell(int cellIndex, int rowIndex) {
+	public void resurrectCell(int rowIndex, int cellIndex) {
 		target[rowIndex * size.x() + cellIndex] = true;
 	}
 
