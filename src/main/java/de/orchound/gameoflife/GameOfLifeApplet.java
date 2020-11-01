@@ -134,8 +134,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	private void checkWindowSize() {
 		if (windowSize.x != width || windowSize.y != height) {
-			windowSize.x = width;
-			windowSize.y = height;
+			windowSize.set(width, height);
 		}
 	}
 

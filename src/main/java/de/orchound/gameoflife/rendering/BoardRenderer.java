@@ -38,12 +38,10 @@ public class BoardRenderer {
 	}
 
 	public void update() {
-		boolean[] data = board.target;
-
 		boardImage.loadPixels();
 
-		for (int i = 0; i < data.length; i++) {
-			boardImage.pixels[i] = data[i] ? setColor : unsetColor;
+		for (int i = 0; i < board.target.length; i++) {
+			boardImage.pixels[i] = board.target[i] ? setColor : unsetColor;
 		}
 
 		boardImage.updatePixels();
