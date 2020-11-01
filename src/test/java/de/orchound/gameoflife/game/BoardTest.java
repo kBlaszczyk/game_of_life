@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BoardTest {
 
 	Board board = new Board(20, 10);
+	boolean[] initialState = board.target.clone();
 
 	@BeforeEach
 	void setUp() {
@@ -87,5 +88,17 @@ class BoardTest {
 
 		assertFalse(board.getCellStatus(9, 1));
 		assertFalse(board.getCellStatus(9, 3));
+	}
+
+	@Test
+	void testReset() {
+		board.reset();
+		assertArrayEquals(initialState, board.target);
+	}
+
+	@Test
+	void testRandomize() {
+		board.randomize();
+		assertFalse(Arrays.equals(board.target, new boolean[board.target.length]));
 	}
 }
