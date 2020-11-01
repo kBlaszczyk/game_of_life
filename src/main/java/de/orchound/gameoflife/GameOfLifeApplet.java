@@ -126,10 +126,12 @@ public class GameOfLifeApplet extends PApplet {
 	private void resetBoard() {
 		board.reset();
 		boardRenderer.update();
+		gameTimeAccumulator = 0;
 	}
 
 	private void randomize() {
 		board.randomize();
 		boardRenderer.update();
+		gameTimeAccumulator = 0;
 	}
 }
