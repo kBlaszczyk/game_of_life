@@ -103,6 +103,8 @@ public class GameOfLifeApplet extends PApplet {
 		case '+' -> changeSpeed(gameFrameTime - frameDurationIncrement);
 		case '-' -> changeSpeed(gameFrameTime + frameDurationIncrement);
 		case 'c' -> resetView();
+		case 'r' -> resetBoard();
+		case 'q' -> randomize();
 		}
 	}
 
@@ -153,5 +155,17 @@ public class GameOfLifeApplet extends PApplet {
 
 	private float getInitialScale() {
 		return min((float) windowSize.x / board.getWidth(), (float) windowSize.y / board.getHeight());
+	}
+
+	private void resetBoard() {
+		board.reset();
+		boardRenderer.update();
+		gameTimeAccumulator = 0;
+	}
+
+	private void randomize() {
+		board.randomize();
+		boardRenderer.update();
+		gameTimeAccumulator = 0;
 	}
 }

@@ -8,7 +8,9 @@ import java.util.Random;
 public class Board {
 
 	public final Vector2ic size;
+	private final Random random = new Random();
 
+	private final boolean[] initial;
 	public boolean[] target;
 	private boolean[] source;
 
@@ -18,12 +20,17 @@ public class Board {
 
 		source = new boolean[cellsCount];
 		target = new boolean[cellsCount];
+		initial = new boolean[cellsCount];
 
-		Random random = new Random();
+		randomize();
+	}
 
+	public void randomize() {
 		for (int i = 0; i < target.length; i++) {
 			target[i] = random.nextBoolean();
 		}
+
+		System.arraycopy(target, 0, initial, 0, target.length);
 	}
 
 	public void update() {
@@ -78,5 +85,9 @@ public class Board {
 
 	public int getHeight() {
 		return size.y();
+	}
+
+	public void reset() {
+		System.arraycopy(initial, 0, target, 0, initial.length);
 	}
 }
