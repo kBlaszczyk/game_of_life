@@ -16,8 +16,8 @@ public class GameOfLifeApplet extends PApplet {
 	private long previousTimestamp = System.nanoTime();
 	private boolean paused = false;
 
-	private final int windowWidth = 1280;
-	private final int windowHeight = 720;
+	private int windowWidth = 1280;
+	private int windowHeight = 720;
 	private float viewOffsetX = windowWidth / 2f;
 	private float viewOffsetY = windowHeight / 2f;
 
@@ -35,7 +35,14 @@ public class GameOfLifeApplet extends PApplet {
 
 	@Override
 	public void setup() {
+		surface.setTitle("Game of Life");
+		surface.setResizable(true);
 		stroke(255);
+
+		windowWidth = width;
+		windowHeight = height;
+		viewOffsetX = windowWidth / 2f;
+		viewOffsetY = windowHeight / 2f;
 	}
 
 	@Override
@@ -47,6 +54,8 @@ public class GameOfLifeApplet extends PApplet {
 	@Override
 	public void draw() {
 		tick();
+
+		checkWindowSize();
 
 		background(0);
 
@@ -104,6 +113,13 @@ public class GameOfLifeApplet extends PApplet {
 		viewOffsetX = windowWidth / 2f;
 		viewOffsetY = windowHeight / 2f;
 		scale = getInitialScale(board.width, board.height, windowWidth, windowHeight);
+	}
+
+	private void checkWindowSize() {
+		if (windowWidth != width || windowHeight != height) {
+			windowWidth = width;
+			windowHeight = height;
+		}
 	}
 
 	private void togglePauseSimulation() {
