@@ -1,6 +1,10 @@
 package de.orchound.gameoflife.rendering;
 
 import de.orchound.gameoflife.game.Board;
+import org.joml.RoundingMode;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
+import org.joml.Vector2i;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -10,39 +14,45 @@ public class BoardRenderer {
 	private final Board board;
 	private final PApplet sketch;
 
-	private final float halfBoardWidth;
-	private final float halfBoardHeight;
+	private final Vector2fc halfBoardSize;
 
-	private final PImage boardRepresentation;
+	private final PImage boardImage;
 	private final int setColor;
 	private final int unsetColor;
 
+	private final Vector2f bufferVector2f = new Vector2f();
+
 	public BoardRenderer(Board board, PApplet sketch) {
 		this.board = board;
-		halfBoardWidth = board.width / 2f;
-		halfBoardHeight = board.height / 2f;
+		halfBoardSize = new Vector2f(board.size).div(2f);
 
 		this.sketch = sketch;
 		setColor = sketch.color(115, 210, 22);
 		unsetColor = sketch.color(0);
 
-		boardRepresentation = sketch.createImage(board.width, board.height, PConstants.RGB);
-		update();
+		boardImage = sketch.createImage(board.getWidth(), board.getHeight(), PConstants.RGB);
 	}
 
 	public void render() {
-		sketch.image(boardRepresentation, -halfBoardWidth, -halfBoardHeight);
+		sketch.image(boardImage, -halfBoardSize.x(), -halfBoardSize.y());
 	}
 
 	public void update() {
-		boolean[] data = board.target;
+		boardImage.loadPixels();
 
-		boardRepresentation.loadPixels();
-
-		for (int i = 0; i < data.length; i++) {
-			boardRepresentation.pixels[i] = data[i] ? setColor : unsetColor;
+		for (int i = 0; i < board.target.length; i++) {
+			boardImage.pixels[i] = board.target[i] ? setColor : unsetColor;
 		}
 
-		boardRepresentation.updatePixels();
+		boardImage.updatePixels();
+	}
+
+	public Vector2i getCellAt(Vector2fc position, Vector2i target) {
+		bufferVector2f.set(halfBoardSize)
+			.sub((int) halfBoardSize.x(), (int) halfBoardSize.y())
+			.add(position);
+
+		return target.set(bufferVector2f, RoundingMode.FLOOR)
+			.add((int) halfBoardSize.x(), (int) halfBoardSize.y());
 	}
 }

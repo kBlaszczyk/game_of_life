@@ -2,6 +2,9 @@ package de.orchound.gameoflife;
 
 import de.orchound.gameoflife.game.Board;
 import de.orchound.gameoflife.rendering.BoardRenderer;
+import org.joml.Vector2f;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 
@@ -16,20 +19,24 @@ public class GameOfLifeApplet extends PApplet {
 	private long previousTimestamp = System.nanoTime();
 	private boolean paused = false;
 
-	private int windowWidth = 1280;
-	private int windowHeight = 720;
-	private float viewOffsetX = windowWidth / 2f;
-	private float viewOffsetY = windowHeight / 2f;
+	private final Vector2i windowSize = new Vector2i(1280, 720);
+	private final Vector2f viewOffset = new Vector2f(windowSize).div(2f);
 
 	private float scale;
 	private final float minScale;
 	private final float maxScale;
 
+	private final Vector2f bufferVector2f = new Vector2f();
+	private final Vector2i bufferVector2i = new Vector2i();
+
 	public GameOfLifeApplet(Board board) {
 		this.board = board;
- 		this.boardRenderer = new BoardRenderer(board, this);
-		maxScale = 40f;
-		scale = min(maxScale, getInitialScale(board.width, board.height, windowWidth, windowHeight));
+
+		boardRenderer = new BoardRenderer(board, this);
+ 		boardRenderer.update();
+
+ 		maxScale = 40f;
+		scale = min(maxScale, getInitialScale());
 		minScale = min(1f, scale);
 	}
 
@@ -38,16 +45,11 @@ public class GameOfLifeApplet extends PApplet {
 		surface.setTitle("Game of Life");
 		surface.setResizable(true);
 		stroke(255);
-
-		windowWidth = width;
-		windowHeight = height;
-		viewOffsetX = windowWidth / 2f;
-		viewOffsetY = windowHeight / 2f;
 	}
 
 	@Override
 	public void settings() {
-		size(windowWidth, windowHeight);
+		size(windowSize.x, windowSize.y);
 		noSmooth();
 	}
 
@@ -61,7 +63,7 @@ public class GameOfLifeApplet extends PApplet {
 
 		pushMatrix();
 
-		translate(viewOffsetX, viewOffsetY);
+		translate(viewOffset.x, viewOffset.y);
 		scale(scale);
 		boardRenderer.render();
 
@@ -71,9 +73,27 @@ public class GameOfLifeApplet extends PApplet {
 	@Override
 	public void mouseDragged() {
 		if (mouseButton == LEFT) {
-			viewOffsetX += mouseX - pmouseX;
-			viewOffsetY += mouseY - pmouseY;
+			viewOffset.add(mouseX - pmouseX, mouseY - pmouseY);
 		}
+	}
+
+	@Override
+	public void mousePressed() {
+		Vector2f position = bufferVector2f.set(mouseX, mouseY)
+			.sub(viewOffset)
+			.div(scale);
+		Vector2i cell = boardRenderer.getCellAt(position, bufferVector2i);
+
+		if (cellInBoardRange(cell)) {
+			board.resurrectCell(cell.y, cell.x);
+			boardRenderer.update();
+		}
+	}
+
+	private boolean cellInBoardRange(Vector2ic cell) {
+		return Math.min(cell.x(), cell.y()) >= 0
+			&& cell.x() < board.getWidth()
+			&& cell.y() < board.getHeight();
 	}
 
 	@Override
@@ -110,15 +130,13 @@ public class GameOfLifeApplet extends PApplet {
 	}
 
 	private void resetView() {
-		viewOffsetX = windowWidth / 2f;
-		viewOffsetY = windowHeight / 2f;
-		scale = getInitialScale(board.width, board.height, windowWidth, windowHeight);
+		viewOffset.set(windowSize).div(2f);
+		scale = getInitialScale();
 	}
 
 	private void checkWindowSize() {
-		if (windowWidth != width || windowHeight != height) {
-			windowWidth = width;
-			windowHeight = height;
+		if (windowSize.x != width || windowSize.y != height) {
+			windowSize.set(width, height);
 		}
 	}
 
@@ -135,8 +153,8 @@ public class GameOfLifeApplet extends PApplet {
 		gameFrameTime = Math.max(50_000_000L, Math.min(1_000_000_000L, target));
 	}
 
-	private float getInitialScale(int boardWidth, int boardHeight, int screenWidth, int screenHeight) {
-		return min((float) screenWidth / boardWidth, (float) screenHeight / boardHeight);
+	private float getInitialScale() {
+		return min((float) windowSize.x / board.getWidth(), (float) windowSize.y / board.getHeight());
 	}
 
 	private void resetBoard() {
