@@ -1,12 +1,18 @@
 package de.orchound.gameoflife;
 
 import de.orchound.gameoflife.game.Board;
+import de.orchound.gameoflife.processing.Button;
 import de.orchound.gameoflife.rendering.BoardRenderer;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.event.MouseEvent;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class GameOfLifeApplet extends PApplet {
 
@@ -25,6 +31,8 @@ public class GameOfLifeApplet extends PApplet {
 	private float scale;
 	private final float minScale;
 	private final float maxScale;
+
+	private final List<Button> buttons = new ArrayList<>();
 
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
@@ -45,6 +53,15 @@ public class GameOfLifeApplet extends PApplet {
 		surface.setTitle("Game of Life");
 		surface.setResizable(true);
 		stroke(255);
+		textAlign(PConstants.CENTER);
+		textSize(20);
+
+		buttons.addAll(Arrays.asList(
+			new Button(10, 10, "Pause", this, this::togglePauseSimulation),
+			new Button(10, 40, "Reset", this, this::resetBoard),
+			new Button(10, 70, "Randomize", this, this::randomize),
+			new Button(10, 100, "Center View", this, this::resetView)
+		));
 	}
 
 	@Override
@@ -68,6 +85,12 @@ public class GameOfLifeApplet extends PApplet {
 		boardRenderer.render();
 
 		popMatrix();
+
+		drawHud();
+	}
+
+	private void drawHud() {
+		buttons.forEach(Button::draw);
 	}
 
 	@Override
@@ -87,6 +110,13 @@ public class GameOfLifeApplet extends PApplet {
 		if (cellInBoardRange(cell)) {
 			board.resurrectCell(cell.y, cell.x);
 			boardRenderer.update();
+		}
+	}
+
+	@Override
+	public void mouseClicked() {
+		for (Button button : buttons) {
+			button.click(mouseX, mouseY);
 		}
 	}
 
