@@ -27,11 +27,11 @@ public class Button {
 	}
 
 	public void click(float x, float y) {
-		Vector2f positionButtonSpace = new Vector2f(x, y).sub(position).sub(halfSize);
-		positionButtonSpace.absolute();
-		if (positionButtonSpace.x <= halfSize.x() && positionButtonSpace.y <= halfSize.y()) {
+		Vector2f positionButtonSpace = new Vector2f(x, y)
+			.sub(position).sub(halfSize).absolute();
+
+		if (positionButtonSpace.x <= halfSize.x() && positionButtonSpace.y <= halfSize.y())
 			action.run();
-		}
 	}
 
 	public void draw() {

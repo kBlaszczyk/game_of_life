@@ -10,6 +10,10 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.event.MouseEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class GameOfLifeApplet extends PApplet {
 
 	private final Board board;
@@ -28,7 +32,7 @@ public class GameOfLifeApplet extends PApplet {
 	private final float minScale;
 	private final float maxScale;
 
-	private Button pauseButton;
+	private final List<Button> buttons = new ArrayList<>();
 
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
@@ -52,9 +56,12 @@ public class GameOfLifeApplet extends PApplet {
 		textAlign(PConstants.CENTER);
 		textSize(20);
 
-		pauseButton = new Button(
-			10, 10, "Pause", this, this::togglePauseSimulation
-		);
+		buttons.addAll(Arrays.asList(
+			new Button(10, 10, "Pause", this, this::togglePauseSimulation),
+			new Button(10, 40, "Reset", this, this::resetBoard),
+			new Button(10, 70, "Randomize", this, this::randomize),
+			new Button(10, 100, "Center View", this, this::resetView)
+		));
 	}
 
 	@Override
@@ -83,7 +90,7 @@ public class GameOfLifeApplet extends PApplet {
 	}
 
 	private void drawHud() {
-		pauseButton.draw();
+		buttons.forEach(Button::draw);
 	}
 
 	@Override
@@ -108,7 +115,9 @@ public class GameOfLifeApplet extends PApplet {
 
 	@Override
 	public void mouseClicked() {
-		pauseButton.click(mouseX, mouseY);
+		for (Button button : buttons) {
+			button.click(mouseX, mouseY);
+		}
 	}
 
 	private boolean cellInBoardRange(Vector2ic cell) {
