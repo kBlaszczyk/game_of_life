@@ -7,7 +7,7 @@ public class Board {
 
 	public final Vector2ic size;
 
-	public final boolean[] initial;
+	private final boolean[] initial;
 	public boolean[] target;
 	private boolean[] source;
 
@@ -76,5 +76,9 @@ public class Board {
 
 	public void reset() {
 		System.arraycopy(initial, 0, target, 0, initial.length);
+	}
+
+	public void makeCurrentStateInitial() {
+		System.arraycopy(target, 0, initial, 0, target.length);
 	}
 }

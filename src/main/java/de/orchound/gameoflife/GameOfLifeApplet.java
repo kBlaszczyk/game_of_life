@@ -133,12 +133,12 @@ public class GameOfLifeApplet extends PApplet {
 	@Override
 	public void keyPressed() {
 		switch (key) {
-			case ' ' -> togglePauseSimulation();
-			case '+' -> changeSpeed(gameFrameTime - frameDurationIncrement);
-			case '-' -> changeSpeed(gameFrameTime + frameDurationIncrement);
-			case 'c' -> resetView();
-			case 'r' -> resetBoard();
-			case 'q' -> randomize();
+		case ' ' -> togglePauseSimulation();
+		case '+' -> changeSpeed(gameFrameTime - frameDurationIncrement);
+		case '-' -> changeSpeed(gameFrameTime + frameDurationIncrement);
+		case 'c' -> resetView();
+		case 'r' -> resetBoard();
+		case 'q' -> randomize();
 		}
 	}
 
@@ -207,6 +207,6 @@ public class GameOfLifeApplet extends PApplet {
 		for (int i = 0; i < board.target.length; i++) {
 			board.target[i] = random.nextBoolean();
 		}
-		System.arraycopy(board.target, 0, board.initial, 0, board.target.length);
+		board.makeCurrentStateInitial();
 	}
 }

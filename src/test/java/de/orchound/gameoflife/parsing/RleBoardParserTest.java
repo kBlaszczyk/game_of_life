@@ -4,15 +4,17 @@ import de.orchound.gameoflife.game.Board;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class RleBoardParserTest {
 
+	private final BoardParser boardParser = new RleBoardParser();
+
 	@Test
 	void testParse() {
-		File file = new File("src/test/resources/pattern.rle");
-		BoardParser boardParser = new RleBoardParser();
+		Path file = new File("src/test/resources/pattern.rle").toPath();
 		Board board = boardParser.parse(file);
 		assertEquals(10, board.getWidth());
 		assertEquals(9, board.getHeight());
