@@ -2,6 +2,8 @@ package de.orchound.gameoflife;
 
 import de.orchound.gameoflife.model.Game;
 import de.orchound.gameoflife.processing.Button;
+import de.orchound.gameoflife.processing.LabeledButton;
+import de.orchound.gameoflife.processing.PauseButton;
 import de.orchound.gameoflife.view.BoardView;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -50,11 +52,14 @@ public class GameOfLifeApplet extends PApplet {
 		textAlign(PConstants.CENTER);
 		textSize(20);
 
+		PauseButton pauseButton = new PauseButton(10, 10, this, game::togglePause);
+		game.registerPauseObserver(pauseButton::setPaused);
+
 		buttons.addAll(Arrays.asList(
-			new Button(10, 10, "Pause", this, game::togglePause),
-			new Button(10, 40, "Reset", this, game::resetBoard),
-			new Button(10, 70, "Randomize", this, game::randomize),
-			new Button(10, 100, "Center View", this, this::resetView)
+			pauseButton,
+			new LabeledButton(10, 70, "Reset", this, game::resetBoard),
+			new LabeledButton(10, 100, "Randomize", this, game::randomize),
+			new LabeledButton(10, 130, "Center View", this, this::resetView)
 		));
 	}
 
@@ -143,11 +148,11 @@ public class GameOfLifeApplet extends PApplet {
 	}
 
 	private void increaseSpeed() {
-		game.setFrameTime(game.getFrameTime() + frameTimeIncrement);
+		game.setFrameTime(game.getFrameTime() - frameTimeIncrement);
 	}
 
 	private void decreaseSpeed() {
-		game.setFrameTime(game.getFrameTime() - frameTimeIncrement);
+		game.setFrameTime(game.getFrameTime() + frameTimeIncrement);
 	}
 
 	private float getInitialScale() {
