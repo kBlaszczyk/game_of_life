@@ -13,6 +13,7 @@ import processing.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class GameOfLifeApplet extends PApplet {
 
@@ -37,13 +38,16 @@ public class GameOfLifeApplet extends PApplet {
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
 
+	private final Random random = new Random();
+
 	public GameOfLifeApplet(Board board) {
 		this.board = board;
+		randomizeBoard();
 
 		boardRenderer = new BoardRenderer(board, this);
- 		boardRenderer.update();
+		boardRenderer.update();
 
- 		maxScale = 40f;
+		maxScale = 40f;
 		scale = min(maxScale, getInitialScale());
 		minScale = min(1f, scale);
 	}
@@ -194,8 +198,15 @@ public class GameOfLifeApplet extends PApplet {
 	}
 
 	private void randomize() {
-		board.randomize();
+		randomizeBoard();
 		boardRenderer.update();
 		gameTimeAccumulator = 0;
+	}
+
+	private void randomizeBoard() {
+		for (int i = 0; i < board.target.length; i++) {
+			board.target[i] = random.nextBoolean();
+		}
+		board.makeCurrentStateInitial();
 	}
 }
