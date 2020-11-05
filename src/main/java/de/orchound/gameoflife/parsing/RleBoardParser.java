@@ -1,8 +1,7 @@
 package de.orchound.gameoflife.parsing;
 
-import de.orchound.gameoflife.game.Board;
+import de.orchound.gameoflife.model.Board;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;

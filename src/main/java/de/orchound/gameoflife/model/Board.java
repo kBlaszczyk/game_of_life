@@ -1,4 +1,4 @@
-package de.orchound.gameoflife.game;
+package de.orchound.gameoflife.model;
 
 import org.joml.Vector2i;
 import org.joml.Vector2ic;

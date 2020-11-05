@@ -1,6 +1,6 @@
 package de.orchound.gameoflife;
 
-import de.orchound.gameoflife.game.Board;
+import de.orchound.gameoflife.model.Game;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import processing.core.PApplet;
@@ -19,7 +19,9 @@ public class GameOfLifeApplication implements Runnable {
 
 	@Override
 	public void run() {
-		Board board = new Board(width, height);
-		PApplet.runSketch(new String[] {"GameOfLifeApplication"}, new GameOfLifeApplet(board));
+		PApplet.runSketch(
+			new String[] {"GameOfLifeApplication"},
+			new GameOfLifeApplet(new Game(width, height))
+		);
 	}
 }

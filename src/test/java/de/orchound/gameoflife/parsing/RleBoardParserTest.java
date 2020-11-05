@@ -1,6 +1,6 @@
 package de.orchound.gameoflife.parsing;
 
-import de.orchound.gameoflife.game.Board;
+import de.orchound.gameoflife.model.Board;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
