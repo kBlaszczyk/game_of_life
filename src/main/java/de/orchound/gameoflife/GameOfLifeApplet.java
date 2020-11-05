@@ -39,7 +39,7 @@ public class GameOfLifeApplet extends PApplet {
 
 		boardView = new BoardView(game, this);
 
- 		maxScale = 40f;
+		maxScale = 40f;
 		scale = min(maxScale, getInitialScale());
 		minScale = min(1f, scale);
 	}

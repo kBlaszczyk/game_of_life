@@ -3,12 +3,9 @@ package de.orchound.gameoflife.model;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
-import java.util.Random;
-
 public class Board {
 
 	public final Vector2ic size;
-	private final Random random = new Random();
 
 	private final boolean[] initial;
 	public boolean[] target;
@@ -21,16 +18,6 @@ public class Board {
 		source = new boolean[cellsCount];
 		target = new boolean[cellsCount];
 		initial = new boolean[cellsCount];
-
-		randomize();
-	}
-
-	public void randomize() {
-		for (int i = 0; i < target.length; i++) {
-			target[i] = random.nextBoolean();
-		}
-
-		System.arraycopy(target, 0, initial, 0, target.length);
 	}
 
 	public void update() {
@@ -89,5 +76,9 @@ public class Board {
 
 	public void reset() {
 		System.arraycopy(initial, 0, target, 0, initial.length);
+	}
+
+	public void makeCurrentStateInitial() {
+		System.arraycopy(target, 0, initial, 0, target.length);
 	}
 }

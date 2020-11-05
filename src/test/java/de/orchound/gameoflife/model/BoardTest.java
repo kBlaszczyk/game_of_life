@@ -95,10 +95,4 @@ class BoardTest {
 		board.reset();
 		assertArrayEquals(initialState, board.target);
 	}
-
-	@Test
-	void testRandomize() {
-		board.randomize();
-		assertFalse(Arrays.equals(board.target, new boolean[board.target.length]));
-	}
 }

@@ -5,7 +5,7 @@ import processing.core.PApplet;
 public class PauseButton extends Button {
 
 	private final PApplet sketch;
-	private boolean paused = false;
+	private boolean paused = true;
 
 	public PauseButton(float x, float y, PApplet sketch, Runnable action) {
 		super(x, y, 40, 40, action);
