@@ -10,8 +10,9 @@ public class Slider {
 
 	private final Vector2fc position;
 	private final Vector2fc size = new Vector2f(60, 30);
-	private float value = 0.5f;
+	private final Vector2fc halfSize = new Vector2f(size).div(2f);
 	private final float handleWidth = 8f;
+	private float value = 0.5f;
 
 	private final PApplet sketch;
 	private final Consumer<Float> action;
@@ -37,8 +38,13 @@ public class Slider {
 	}
 
 	public void drag(float x, float y) {
-		float newValue = PApplet.map(x, position.x(), position.x() + size.x(), 0f, 1f);
-		action.accept(Math.min(1f, Math.max(0f, newValue)));
+		Vector2f positionSliderSpace = new Vector2f(x, y)
+			.sub(position).sub(halfSize).absolute();
+
+		if (positionSliderSpace.x <= halfSize.x() && positionSliderSpace.y <= halfSize.y()) {
+			float newValue = PApplet.map(x, position.x(), position.x() + size.x(), 0f, 1f);
+			action.accept(Math.min(1f, Math.max(0f, newValue)));
+		}
 	}
 
 	public void setValue(float newValue) {

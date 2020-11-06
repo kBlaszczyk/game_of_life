@@ -15,13 +15,18 @@ public class Game {
 	private final Random random = new Random();
 
 	private long gameTimeAccumulator = 0L;
-	private long frameTime = 200_000_000L;
+
+	private final long minFrameTime = 50_000_000L;
+	private final long maxFrameTime = 1_000_000_000L;
+	private float speed = 0.6f;
+	private long frameTime = calculateFrameTime();
 	private long previousTimestamp = System.nanoTime();
 
 	private boolean paused = true;
 
 	private final List<Consumer<boolean[]>> boardDataObservers = new ArrayList<>();
 	private final List<Consumer<Boolean>> pauseObservers = new ArrayList<>();
+	private final List<Consumer<Float>> speedObserver = new ArrayList<>();
 
 	public Game(int width, int height) {
 		board = new Board(width, height);
@@ -61,12 +66,22 @@ public class Game {
 		}
 	}
 
-	public long getFrameTime() {
-		return frameTime;
+	/**
+	 * Sets the animation speed depending on the specified value.
+	 * The value is expected to be in the closed interval [0..1].
+	 * Where 0 and 1 represent the slowest and highest animation speed respectively.
+	 * @param value speed indicator [0, 1]
+	 */
+	public void setSpeed(float value) {
+		speed = Math.max(0f, Math.min(1f, value));
+		frameTime = calculateFrameTime();
+		for (Consumer<Float> observer : speedObserver) {
+			observer.accept(speed);
+		}
 	}
 
-	public void setFrameTime(long target) {
-		frameTime = Math.max(50_000_000L, Math.min(1_000_000_000L, target));
+	private long calculateFrameTime() {
+		return maxFrameTime - (long) (speed * (maxFrameTime - minFrameTime));
 	}
 
 	public void toggleCell(Vector2ic cell) {
@@ -116,6 +131,11 @@ public class Game {
 
 	public void registerPauseObserver(Consumer<Boolean> observer) {
 		pauseObservers.add(observer);
+	}
+
+	public void registerSpeedObserver(Consumer<Float> observer) {
+		speedObserver.add(observer);
+		observer.accept(speed);
 	}
 
 	public Vector2ic getSize() {
