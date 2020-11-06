@@ -18,8 +18,7 @@ public class Game {
 
 	private final long minFrameTime = 50_000_000L;
 	private final long maxFrameTime = 1_000_000_000L;
-	private float speed = 0.6f;
-	private long frameTime = calculateFrameTime();
+	private long frameTime = minFrameTime;
 	private long previousTimestamp = System.nanoTime();
 
 	private boolean paused = true;
@@ -73,15 +72,8 @@ public class Game {
 	 * @param value speed indicator [0, 1]
 	 */
 	public void setSpeed(float value) {
-		speed = Math.max(0f, Math.min(1f, value));
-		frameTime = calculateFrameTime();
-		for (Consumer<Float> observer : speedObserver) {
-			observer.accept(speed);
-		}
-	}
-
-	private long calculateFrameTime() {
-		return maxFrameTime - (long) (speed * (maxFrameTime - minFrameTime));
+		float speed = Math.max(0f, Math.min(1f, value));
+		frameTime = maxFrameTime - (long) (speed * (maxFrameTime - minFrameTime));
 	}
 
 	public void toggleCell(Vector2ic cell) {
@@ -131,11 +123,6 @@ public class Game {
 
 	public void registerPauseObserver(Consumer<Boolean> observer) {
 		pauseObservers.add(observer);
-	}
-
-	public void registerSpeedObserver(Consumer<Float> observer) {
-		speedObserver.add(observer);
-		observer.accept(speed);
 	}
 
 	public Vector2ic getSize() {

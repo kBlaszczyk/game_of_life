@@ -63,7 +63,6 @@ public class GameOfLifeApplet extends PApplet {
 		));
 
 		speedSlider = new Slider(10, 160, this, game::setSpeed);
-		game.registerSpeedObserver(speedSlider::setValue);
 	}
 
 	@Override
