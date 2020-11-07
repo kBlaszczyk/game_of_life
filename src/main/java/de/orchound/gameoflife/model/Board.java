@@ -59,11 +59,13 @@ public class Board {
 	}
 
 	public void resurrectCell(int rowIndex, int cellIndex) {
-		target[rowIndex * size.x() + cellIndex] = true;
+		if (cellIndex >= 0 & cellIndex < size.x())
+			target[rowIndex * size.x() + cellIndex] = true;
 	}
 
 	public void killCell(int rowIndex, int cellIndex) {
-		target[rowIndex * size.x() + cellIndex] = false;
+		if (cellIndex >= 0 & cellIndex < size.x())
+			target[rowIndex * size.x() + cellIndex] = false;
 	}
 
 	public int getWidth() {

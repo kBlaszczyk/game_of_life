@@ -106,9 +106,7 @@ public class GameOfLifeApplet extends PApplet {
 					.div(scale);
 				Vector2i cell = boardView.getCellAt(position, bufferVector2i);
 				game.setCell(cell);
-			}  catch (ArrayIndexOutOfBoundsException ignored) {
-
-			}
+			}  catch (ArrayIndexOutOfBoundsException ignored) {}
 		}
 	}
 
