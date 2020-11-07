@@ -21,6 +21,8 @@ public class Game {
 	private final List<Consumer<boolean[]>> boardDataObservers = new ArrayList<>();
 	private final List<Consumer<Boolean>> pauseObservers = new ArrayList<>();
 
+	private boolean paintMode;
+
 	public Game(int width, int height) {
 		board = new Board(width, height);
 		randomize();
@@ -66,11 +68,29 @@ public class Game {
 		if (!cellInBoardRange(cell))
 			return;
 
-		if (board.getCellStatus(cell.y(), cell.x()))
+		if (board.getCellStatus(cell.y(), cell.x())) {
 			board.killCell(cell.y(), cell.x());
-		else
+			paintMode = false;
+		}
+		else {
 			board.resurrectCell(cell.y(), cell.x());
+			paintMode = true;
+		}
+		notifyBoardDataObservers();
 
+
+	}
+
+	public void setCell(Vector2ic cell) {
+		if (paintMode) {
+			if (!board.getCellStatus(cell.y(), cell.x())) {
+				board.resurrectCell(cell.y(), cell.x());
+			}
+		} else {
+			if (board.getCellStatus(cell.y(), cell.x())) {
+				board.killCell(cell.y(), cell.x());
+			}
+		}
 		notifyBoardDataObservers();
 	}
 

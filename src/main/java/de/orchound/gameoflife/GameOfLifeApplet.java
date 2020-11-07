@@ -99,17 +99,29 @@ public class GameOfLifeApplet extends PApplet {
 	public void mouseDragged() {
 		if (mouseButton == LEFT) {
 			viewOffset.add(mouseX - pmouseX, mouseY - pmouseY);
+		} else if (mouseButton == RIGHT) {
+			try {
+				Vector2f position = bufferVector2f.set(mouseX, mouseY)
+					.sub(viewOffset)
+					.div(scale);
+				Vector2i cell = boardView.getCellAt(position, bufferVector2i);
+				game.setCell(cell);
+			}  catch (ArrayIndexOutOfBoundsException ignored) {
+
+			}
 		}
 	}
 
 	@Override
 	public void mousePressed() {
-		Vector2f position = bufferVector2f.set(mouseX, mouseY)
-			.sub(viewOffset)
-			.div(scale);
+		if (mouseButton == RIGHT) {
+			Vector2f position = bufferVector2f.set(mouseX, mouseY)
+				.sub(viewOffset)
+				.div(scale);
 
-		Vector2i cell = boardView.getCellAt(position, bufferVector2i);
-		game.toggleCell(cell);
+			Vector2i cell = boardView.getCellAt(position, bufferVector2i);
+			game.toggleCell(cell);
+		}
 	}
 
 	@Override
