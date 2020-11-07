@@ -9,18 +9,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PImage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BoardViewTest {
 
+	@Mock
+	private PImage boardImage;
 	@Mock
 	private PApplet sketch;
 	private BoardView boardView;
 
 	@BeforeEach
 	public void setUp() {
+		boardImage.pixels = new int[10 * 5];
+		when(sketch.createImage(10, 5, PConstants.RGB)).thenReturn(boardImage);
 		boardView = new BoardView(new Game(10, 5), sketch);
 	}
 
