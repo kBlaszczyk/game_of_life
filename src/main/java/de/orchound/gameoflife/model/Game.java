@@ -3,6 +3,7 @@ package de.orchound.gameoflife.model;
 import org.joml.Vector2ic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -111,6 +112,13 @@ public class Game {
 			board.target[i] = random.nextBoolean();
 		}
 
+		board.makeCurrentStateInitial();
+		gameTimeAccumulator = 0;
+		notifyBoardDataObservers();
+	}
+
+	public void clear() {
+		Arrays.fill(board.target, false);
 		board.makeCurrentStateInitial();
 		gameTimeAccumulator = 0;
 		notifyBoardDataObservers();

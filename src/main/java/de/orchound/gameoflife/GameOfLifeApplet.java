@@ -58,8 +58,9 @@ public class GameOfLifeApplet extends PApplet {
 		buttons.addAll(Arrays.asList(
 			pauseButton,
 			new LabeledButton(10, 70, "Reset", this, game::resetBoard),
-			new LabeledButton(10, 100, "Randomize", this, game::randomize),
-			new LabeledButton(10, 130, "Center View", this, this::resetView)
+			new LabeledButton(10, 100, "Clear", this, game::clear),
+			new LabeledButton(10, 130, "Randomize", this, game::randomize),
+			new LabeledButton(10, 160, "Center View", this, this::resetView)
 		));
 	}
 
@@ -138,6 +139,7 @@ public class GameOfLifeApplet extends PApplet {
 		case 'c' -> resetView();
 		case 'r' -> game.resetBoard();
 		case 'q' -> game.randomize();
+		case BACKSPACE -> game.clear();
 		}
 	}
 
