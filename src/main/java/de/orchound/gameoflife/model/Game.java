@@ -1,7 +1,9 @@
 package de.orchound.gameoflife.model;
 
+import de.orchound.gameoflife.parsing.RleBoardParser;
 import org.joml.Vector2ic;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,6 +26,11 @@ public class Game {
 	public Game(int width, int height) {
 		board = new Board(width, height);
 		randomize();
+	}
+
+	public Game(Path file) {
+		RleBoardParser rleBoardParser = new RleBoardParser();
+		board = rleBoardParser.parse(file);
 	}
 
 	public void update() {
