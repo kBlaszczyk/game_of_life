@@ -124,6 +124,10 @@ public class Game {
 		notifyBoardDataObservers();
 	}
 
+	public void save() {
+		board.makeCurrentStateInitial();
+	}
+
 	public void registerBoardDataObserver(Consumer<boolean[]> observer) {
 		boardDataObservers.add(observer);
 		observer.accept(board.target);
