@@ -35,22 +35,6 @@ public class MouseInputEvent {
 		consumed = false;
 	}
 
-	public int getActions() {
-		return actions;
-	}
-
-	public int getKeys() {
-		return keys;
-	}
-
-	public void addAction(int action) {
-		actions |= action;
-	}
-
-	public void addKey(int key) {
-		keys |= key;
-	}
-
 	public int getMouseX() {
 		return mouseX;
 	}
@@ -77,7 +61,7 @@ public class MouseInputEvent {
 		previousMouseY = y;
 	}
 
-	public boolean wasClicked() {
+	public boolean isClicked() {
 		return getActionState(CLICKED);
 	}
 
@@ -85,7 +69,7 @@ public class MouseInputEvent {
 		actions |= CLICKED;
 	}
 
-	public boolean wasPressed() {
+	public boolean isPressed() {
 		return getActionState(PRESSED);
 	}
 
@@ -93,7 +77,15 @@ public class MouseInputEvent {
 		actions |= PRESSED;
 	}
 
-	public boolean wasDragged() {
+	public boolean isReleased() {
+		return getActionState(RELEASED);
+	}
+
+	public void setReleased() {
+		actions |= RELEASED;
+	}
+
+	public boolean isDragged() {
 		return getActionState(DRAGGED);
 	}
 
@@ -101,7 +93,7 @@ public class MouseInputEvent {
 		actions |= DRAGGED;
 	}
 
-	public boolean getActionState(int action) {
+	private boolean getActionState(int action) {
 		return (actions & action) != 0;
 	}
 
@@ -118,7 +110,7 @@ public class MouseInputEvent {
 	}
 
 	public void setRightKey() {
-		keys |= MOUSE1;
+		keys |= MOUSE2;
 	}
 
 	public boolean getMiddleKey() {
