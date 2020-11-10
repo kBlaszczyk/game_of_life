@@ -6,15 +6,17 @@ public class MouseInputEvent {
 	private static final  int MOUSE2 = 2;
 	private static final int MOUSE3 = 4;
 
-	private static final int CLICKED = 1;
-	private static final int PRESSED = 2;
-	private static final int RELEASED = 4;
-	private static final int DRAGGED = 8;
+	private static final int CLICK = 1;
+	private static final int PRESS = 2;
+	private static final int RELEASE = 4;
+	private static final int DRAG = 8;
+	private static final int SCROLL = 16;
 
 	private int mouseX = 0;
 	private int mouseY = 0;
 	private int previousMouseX = 0;
 	private int previousMouseY = 0;
+	private int scrollsCount = 0;
 
 	private int keys = 0;
 	private int actions = 0;
@@ -32,6 +34,7 @@ public class MouseInputEvent {
 	public void reset() {
 		keys = 0;
 		actions = 0;
+		scrollsCount = 0;
 		consumed = false;
 	}
 
@@ -62,35 +65,48 @@ public class MouseInputEvent {
 	}
 
 	public boolean isClicked() {
-		return getActionState(CLICKED);
+		return getActionState(CLICK);
 	}
 
 	public void setClicked() {
-		actions |= CLICKED;
+		actions |= CLICK;
 	}
 
 	public boolean isPressed() {
-		return getActionState(PRESSED);
+		return getActionState(PRESS);
 	}
 
 	public void setPressed() {
-		actions |= PRESSED;
+		actions |= PRESS;
 	}
 
 	public boolean isReleased() {
-		return getActionState(RELEASED);
+		return getActionState(RELEASE);
 	}
 
 	public void setReleased() {
-		actions |= RELEASED;
+		actions |= RELEASE;
 	}
 
 	public boolean isDragged() {
-		return getActionState(DRAGGED);
+		return getActionState(DRAG);
 	}
 
 	public void setDragged() {
-		actions |= DRAGGED;
+		actions |= DRAG;
+	}
+
+	public boolean isScrolled() {
+		return getActionState(SCROLL);
+	}
+
+	public void setScrolled(int scrollsCount) {
+		this.scrollsCount = scrollsCount;
+		actions |= SCROLL;
+	}
+
+	public int getScrollsCount() {
+		return scrollsCount;
 	}
 
 	private boolean getActionState(int action) {
