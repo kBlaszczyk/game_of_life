@@ -34,6 +34,8 @@ public class GameOfLifeApplet extends PApplet {
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
 
+	private final MouseInputEvent mouseInputEvent = new MouseInputEvent();
+
 	public GameOfLifeApplet(Game game) {
 		this.game = game;
 
@@ -73,6 +75,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	@Override
 	public void draw() {
+		processInput();
 		game.update();
 
 		checkWindowSize();
@@ -81,6 +84,36 @@ public class GameOfLifeApplet extends PApplet {
 
 		drawGame();
 		drawHud();
+	}
+
+	private void processInput() {
+		mouseInputEvent.setMousePosition(mouseX, mouseY);
+		mouseInputEvent.setPreviousMousePosition(pmouseX, pmouseY);
+
+		speedSlider.handleMouseInput(mouseInputEvent);
+		if (!mouseInputEvent.isConsumed()) {
+			if (mouseInputEvent.isPressed() && mouseInputEvent.getLeftKey())	// ToDo move input event handling to the board view
+				drawCell(mouseInputEvent.getMouseX(), mouseInputEvent.getMouseY());
+		}
+
+		for (Button button : buttons) {
+			if (mouseInputEvent.isClicked() && mouseInputEvent.getLeftKey())
+				button.click(mouseX, mouseY);
+		}
+
+		if (mouseInputEvent.isDragged() && mouseInputEvent.getMiddleKey())
+			viewOffset.add(mouseX - pmouseX, mouseY - pmouseY);
+
+		mouseInputEvent.reset();
+	}
+
+	private void drawCell(int x, int y) {
+		Vector2f position = bufferVector2f.set(x, y)
+			.sub(viewOffset)
+			.div(scale);
+
+		Vector2i cell = boardView.getCellAt(position, bufferVector2i);
+		game.toggleCell(cell);
 	}
 
 	private void drawGame() {
@@ -100,28 +133,27 @@ public class GameOfLifeApplet extends PApplet {
 
 	@Override
 	public void mouseDragged() {
-		if (mouseButton == LEFT) {
-			viewOffset.add(mouseX - pmouseX, mouseY - pmouseY);
-			speedSlider.drag(mouseX, mouseY);
-		}
+		mouseInputEvent.setDragged();
+		updatePressedMouseButtons();
 	}
 
 	@Override
 	public void mousePressed() {
-		Vector2f position = bufferVector2f.set(mouseX, mouseY)
-			.sub(viewOffset)
-			.div(scale);
-
-		Vector2i cell = boardView.getCellAt(position, bufferVector2i);
-		game.toggleCell(cell);
-
-		speedSlider.drag(mouseX, mouseY);
+		mouseInputEvent.setPressed();
+		updatePressedMouseButtons();
 	}
 
 	@Override
 	public void mouseClicked() {
-		for (Button button : buttons) {
-			button.click(mouseX, mouseY);
+		mouseInputEvent.setClicked();
+		updatePressedMouseButtons();
+	}
+
+	private void updatePressedMouseButtons() {
+		switch (mouseButton) {
+		case LEFT -> mouseInputEvent.setLeftKey();
+		case RIGHT -> mouseInputEvent.setRightKey();
+		case CENTER -> mouseInputEvent.setMiddleKey();
 		}
 	}
 

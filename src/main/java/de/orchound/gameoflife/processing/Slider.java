@@ -1,5 +1,6 @@
 package de.orchound.gameoflife.processing;
 
+import de.orchound.gameoflife.MouseInputEvent;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import processing.core.PApplet;
@@ -41,13 +42,26 @@ public class Slider {
 		sketch.popStyle();
 	}
 
-	public void drag(float x, float y) {
+	public void handleMouseInput(MouseInputEvent inputEvent) {
+		if (!mouseInputRelevant(inputEvent))
+			return;
+
+		value = (inputEvent.getMouseX() - position.x()) / size.x();
+		action.accept(Math.min(1f, Math.max(0f, value)));
+		inputEvent.consume();
+	}
+
+	private boolean mouseInputRelevant(MouseInputEvent inputEvent) {
+		return (inputEvent.getLeftKey()
+			&& (inputEvent.isPressed() || inputEvent.isDragged())
+			&& hitByCursor(inputEvent.getMouseX(), inputEvent.getMouseY())
+		);
+	}
+
+	private boolean hitByCursor(int x, int y) {
 		Vector2f positionSliderSpace = mousePositionBuffer.set(x, y)
 			.sub(position).sub(halfSize).absolute();
 
-		if (positionSliderSpace.x <= halfSize.x() && positionSliderSpace.y <= halfSize.y()) {
-			value = (x - position.x()) / size.x();
-			action.accept(Math.min(1f, Math.max(0f, value)));
-		}
+		return positionSliderSpace.x <= halfSize.x() && positionSliderSpace.y <= halfSize.y();
 	}
 }
