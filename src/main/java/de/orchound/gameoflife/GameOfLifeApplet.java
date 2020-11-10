@@ -5,8 +5,7 @@ import de.orchound.gameoflife.processing.Button;
 import de.orchound.gameoflife.processing.LabeledButton;
 import de.orchound.gameoflife.processing.PauseButton;
 import de.orchound.gameoflife.processing.Slider;
-import de.orchound.gameoflife.view.BoardView;
-import org.joml.Vector2f;
+import de.orchound.gameoflife.view.GameView;
 import org.joml.Vector2i;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -19,31 +18,17 @@ import java.util.List;
 public class GameOfLifeApplet extends PApplet {
 
 	private final Game game;
-	private final BoardView boardView;
 
 	private final Vector2i windowSize = new Vector2i(1280, 720);
-	private final Vector2f viewOffset = new Vector2f(windowSize).div(2f);
 
-	private float scale;
-	private final float minScale;
-	private final float maxScale;
-
+	private GameView gameView;
 	private final List<Button> buttons = new ArrayList<>();
 	private Slider speedSlider;
-
-	private final Vector2f bufferVector2f = new Vector2f();
-	private final Vector2i bufferVector2i = new Vector2i();
 
 	private final MouseInputEvent mouseInputEvent = new MouseInputEvent();
 
 	public GameOfLifeApplet(Game game) {
 		this.game = game;
-
-		boardView = new BoardView(game, this);
-
-		maxScale = 40f;
-		scale = min(maxScale, getInitialScale());
-		minScale = min(1f, scale);
 	}
 
 	@Override
@@ -54,6 +39,8 @@ public class GameOfLifeApplet extends PApplet {
 		textAlign(PConstants.CENTER);
 		textSize(20);
 
+		gameView = new GameView(game, this);
+
 		PauseButton pauseButton = new PauseButton(10, 10, this, game::togglePause);
 		game.registerPauseObserver(pauseButton::setPaused);
 
@@ -61,7 +48,7 @@ public class GameOfLifeApplet extends PApplet {
 			pauseButton,
 			new LabeledButton(10, 70, "Reset", this, game::resetBoard),
 			new LabeledButton(10, 100, "Randomize", this, game::randomize),
-			new LabeledButton(10, 130, "Center View", this, this::resetView)
+			new LabeledButton(10, 130, "Center View", this, gameView::reset)
 		));
 
 		speedSlider = new Slider(10, 160, this, game::setSpeed);
@@ -78,11 +65,9 @@ public class GameOfLifeApplet extends PApplet {
 		processInput();
 		game.update();
 
-		checkWindowSize();
-
 		background(0);
+		gameView.draw();
 
-		drawGame();
 		drawHud();
 	}
 
@@ -92,8 +77,7 @@ public class GameOfLifeApplet extends PApplet {
 
 		speedSlider.handleMouseInput(mouseInputEvent);
 		if (!mouseInputEvent.isConsumed()) {
-			if (mouseInputEvent.isPressed() && mouseInputEvent.getLeftKey())	// ToDo move input event handling to the board view
-				drawCell(mouseInputEvent.getMouseX(), mouseInputEvent.getMouseY());
+			gameView.handleMouseInput(mouseInputEvent);
 		}
 
 		for (Button button : buttons) {
@@ -101,29 +85,7 @@ public class GameOfLifeApplet extends PApplet {
 				button.click(mouseX, mouseY);
 		}
 
-		if (mouseInputEvent.isDragged() && mouseInputEvent.getMiddleKey())
-			viewOffset.add(mouseX - pmouseX, mouseY - pmouseY);
-
 		mouseInputEvent.reset();
-	}
-
-	private void drawCell(int x, int y) {
-		Vector2f position = bufferVector2f.set(x, y)
-			.sub(viewOffset)
-			.div(scale);
-
-		Vector2i cell = boardView.getCellAt(position, bufferVector2i);
-		game.toggleCell(cell);
-	}
-
-	private void drawGame() {
-		pushMatrix();
-
-		translate(viewOffset.x, viewOffset.y);
-		scale(scale);
-		boardView.draw();
-
-		popMatrix();
 	}
 
 	private void drawHud() {
@@ -149,6 +111,11 @@ public class GameOfLifeApplet extends PApplet {
 		updatePressedMouseButtons();
 	}
 
+	@Override
+	public void mouseWheel(MouseEvent event) {
+		mouseInputEvent.setScrolled(event.getCount());
+	}
+
 	private void updatePressedMouseButtons() {
 		switch (mouseButton) {
 		case LEFT -> mouseInputEvent.setLeftKey();
@@ -161,29 +128,9 @@ public class GameOfLifeApplet extends PApplet {
 	public void keyPressed() {
 		switch (key) {
 		case ' ' -> game.togglePause();
-		case 'c' -> resetView();
+		case 'c' -> gameView.reset();
 		case 'r' -> game.resetBoard();
 		case 'q' -> game.randomize();
 		}
-	}
-
-	@Override
-	public void mouseWheel(MouseEvent event) {
-		scale = constrain(scale - event.getCount() * 0.5f, minScale, maxScale);
-	}
-
-	private void resetView() {
-		viewOffset.set(windowSize).div(2f);
-		scale = getInitialScale();
-	}
-
-	private void checkWindowSize() {
-		if (windowSize.x != width || windowSize.y != height) {
-			windowSize.set(width, height);
-		}
-	}
-
-	private float getInitialScale() {
-		return min((float) windowSize.x / boardView.size.x(), (float) windowSize.y / boardView.size.y());
 	}
 }
