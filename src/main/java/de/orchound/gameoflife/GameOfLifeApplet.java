@@ -76,9 +76,8 @@ public class GameOfLifeApplet extends PApplet {
 		mouseInputEvent.setPreviousMousePosition(pmouseX, pmouseY);
 
 		speedSlider.handleMouseInput(mouseInputEvent);
-		if (!mouseInputEvent.isConsumed()) {
+		if (!mouseInputEvent.isConsumed())
 			gameView.handleMouseInput(mouseInputEvent);
-		}
 
 		for (Button button : buttons) {
 			if (mouseInputEvent.isClicked() && mouseInputEvent.getLeftKey())
