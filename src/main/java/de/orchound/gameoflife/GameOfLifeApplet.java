@@ -39,9 +39,9 @@ public class GameOfLifeApplet extends PApplet {
 
 		boardView = new BoardView(game, this);
 
+		minScale = 1f;
 		maxScale = 40f;
-		scale = min(maxScale, getInitialScale());
-		minScale = min(1f, scale);
+		scale = getInitialScale();
 	}
 
 	@Override
@@ -156,6 +156,9 @@ public class GameOfLifeApplet extends PApplet {
 	}
 
 	private float getInitialScale() {
-		return min((float) windowSize.x / boardView.size.x(), (float) windowSize.y / boardView.size.y());
+		return constrain(
+			min((float) windowSize.x / boardView.size.x(), (float) windowSize.y / boardView.size.y()),
+			minScale, maxScale
+		);
 	}
 }
