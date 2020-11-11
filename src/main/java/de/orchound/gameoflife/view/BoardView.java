@@ -44,16 +44,19 @@ public class BoardView {
 		setColor = sketch.color(115, 210, 22);
 		unsetColor = sketch.color(0);
 
+		minScale = 1f;
 		maxScale = 40f;
-		scale = Math.min(maxScale, getInitialScale());
-		minScale = Math.min(1f, scale);
+		scale = getInitialScale();
 
 		boardImage = sketch.createImage(boardSize.x(), boardSize.y(), PConstants.RGB);
 		game.registerBoardDataObserver(this::updateImage);
 	}
 
 	private float getInitialScale() {
-		return Math.min((float) windowSize.x / size.x(), (float) windowSize.y / size.y());
+		return PApplet.constrain(
+			Math.min((float) windowSize.x / size.x(), (float) windowSize.y / size.y()),
+			minScale, maxScale
+		);
 	}
 
 	public void draw() {
