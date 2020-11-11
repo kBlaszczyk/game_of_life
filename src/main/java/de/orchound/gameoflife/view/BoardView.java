@@ -9,7 +9,7 @@ import processing.core.PImage;
 
 import java.lang.Math;
 
-public class GameView {
+public class BoardView {
 
 	private final PApplet sketch;
 	private final Game game;
@@ -30,7 +30,7 @@ public class GameView {
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
 
-	public GameView(Game game, PApplet sketch) {
+	public BoardView(Game game, PApplet sketch) {
 		this.game = game;
 
 		windowSize = new Vector2i(sketch.sketchWidth(), sketch.sketchHeight());

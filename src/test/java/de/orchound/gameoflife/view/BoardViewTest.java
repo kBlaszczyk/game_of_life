@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GameViewTest {
+class BoardViewTest {
 
 	@Mock
 	private PApplet sketch;
@@ -26,13 +26,13 @@ class GameViewTest {
 	@Spy
 	private final Game game = new Game(10, 5);
 
-	private GameView gameView;
+	private BoardView boardView;
 
 	@BeforeEach
 	public void setUp() {
 		when(sketch.createImage(10, 5, PConstants.RGB))
 			.thenReturn(new PImage(10, 5));
-		gameView = new GameView(game, sketch);
+		boardView = new BoardView(game, sketch);
 	}
 
 	@Test
@@ -42,7 +42,7 @@ class GameViewTest {
 		inputEvent.setLeftKey();
 		inputEvent.setMousePosition(0, 0);
 
-		gameView.handleMouseInput(inputEvent);
+		boardView.handleMouseInput(inputEvent);
 		verify(game).toggleCell(ArgumentMatchers.eq(new Vector2i(5, 2)));
 	}
 }

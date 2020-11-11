@@ -5,7 +5,7 @@ import de.orchound.gameoflife.processing.Button;
 import de.orchound.gameoflife.processing.LabeledButton;
 import de.orchound.gameoflife.processing.PauseButton;
 import de.orchound.gameoflife.processing.Slider;
-import de.orchound.gameoflife.view.GameView;
+import de.orchound.gameoflife.view.BoardView;
 import org.joml.Vector2i;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -21,7 +21,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	private final Vector2i windowSize = new Vector2i(1280, 720);
 
-	private GameView gameView;
+	private BoardView boardView;
 	private final List<Button> buttons = new ArrayList<>();
 	private Slider speedSlider;
 
@@ -39,7 +39,7 @@ public class GameOfLifeApplet extends PApplet {
 		textAlign(PConstants.CENTER);
 		textSize(20);
 
-		gameView = new GameView(game, this);
+		boardView = new BoardView(game, this);
 
 		PauseButton pauseButton = new PauseButton(10, 10, this, game::togglePause);
 		game.registerPauseObserver(pauseButton::setPaused);
@@ -48,7 +48,7 @@ public class GameOfLifeApplet extends PApplet {
 			pauseButton,
 			new LabeledButton(10, 70, "Reset", this, game::resetBoard),
 			new LabeledButton(10, 100, "Randomize", this, game::randomize),
-			new LabeledButton(10, 130, "Center View", this, gameView::reset)
+			new LabeledButton(10, 130, "Center View", this, boardView::reset)
 		));
 
 		speedSlider = new Slider(10, 160, this, game::setSpeed);
@@ -66,7 +66,7 @@ public class GameOfLifeApplet extends PApplet {
 		game.update();
 
 		background(0);
-		gameView.draw();
+		boardView.draw();
 
 		drawHud();
 	}
@@ -77,7 +77,7 @@ public class GameOfLifeApplet extends PApplet {
 
 		speedSlider.handleMouseInput(mouseInputEvent);
 		if (!mouseInputEvent.isConsumed())
-			gameView.handleMouseInput(mouseInputEvent);
+			boardView.handleMouseInput(mouseInputEvent);
 
 		for (Button button : buttons) {
 			if (mouseInputEvent.isClicked() && mouseInputEvent.getLeftKey())
@@ -127,7 +127,7 @@ public class GameOfLifeApplet extends PApplet {
 	public void keyPressed() {
 		switch (key) {
 		case ' ' -> game.togglePause();
-		case 'c' -> gameView.reset();
+		case 'c' -> boardView.reset();
 		case 'r' -> game.resetBoard();
 		case 'q' -> game.randomize();
 		}
