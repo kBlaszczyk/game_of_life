@@ -4,8 +4,8 @@ import de.orchound.gameoflife.model.Game;
 import de.orchound.gameoflife.processing.Button;
 import de.orchound.gameoflife.processing.LabeledButton;
 import de.orchound.gameoflife.processing.PauseButton;
+import de.orchound.gameoflife.processing.Slider;
 import de.orchound.gameoflife.view.BoardView;
-import org.joml.Vector2f;
 import org.joml.Vector2i;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -18,30 +18,17 @@ import java.util.List;
 public class GameOfLifeApplet extends PApplet {
 
 	private final Game game;
-	private final BoardView boardView;
-
-	private final long frameTimeIncrement = 100_000_000L;
 
 	private final Vector2i windowSize = new Vector2i(1280, 720);
-	private final Vector2f viewOffset = new Vector2f(windowSize).div(2f);
 
-	private float scale;
-	private final float minScale;
-	private final float maxScale;
-
+	private BoardView boardView;
 	private final List<Button> buttons = new ArrayList<>();
+	private Slider speedSlider;
 
-	private final Vector2f bufferVector2f = new Vector2f();
-	private final Vector2i bufferVector2i = new Vector2i();
+	private final MouseInputEvent mouseInputEvent = new MouseInputEvent();
 
 	public GameOfLifeApplet(Game game) {
 		this.game = game;
-
-		boardView = new BoardView(game, this);
-
-		minScale = 1f;
-		maxScale = 40f;
-		scale = getInitialScale();
 	}
 
 	@Override
@@ -52,6 +39,8 @@ public class GameOfLifeApplet extends PApplet {
 		textAlign(PConstants.CENTER);
 		textSize(20);
 
+		boardView = new BoardView(game, this);
+
 		PauseButton pauseButton = new PauseButton(10, 10, this, game::togglePause);
 		game.registerPauseObserver(pauseButton::setPaused);
 
@@ -59,8 +48,10 @@ public class GameOfLifeApplet extends PApplet {
 			pauseButton,
 			new LabeledButton(10, 70, "Reset", this, game::resetBoard),
 			new LabeledButton(10, 100, "Randomize", this, game::randomize),
-			new LabeledButton(10, 130, "Center View", this, this::resetView)
+			new LabeledButton(10, 130, "Center View", this, boardView::reset)
 		));
+
+		speedSlider = new Slider(10, 160, this, game::setSpeed);
 	}
 
 	@Override
@@ -71,51 +62,64 @@ public class GameOfLifeApplet extends PApplet {
 
 	@Override
 	public void draw() {
+		processInput();
 		game.update();
 
-		checkWindowSize();
-
 		background(0);
+		boardView.draw();
 
-		drawGame();
 		drawHud();
 	}
 
-	private void drawGame() {
-		pushMatrix();
+	private void processInput() {
+		mouseInputEvent.setMousePosition(mouseX, mouseY);
+		mouseInputEvent.setPreviousMousePosition(pmouseX, pmouseY);
 
-		translate(viewOffset.x, viewOffset.y);
-		scale(scale);
-		boardView.draw();
+		speedSlider.handleMouseInput(mouseInputEvent);
+		if (!mouseInputEvent.isConsumed())
+			boardView.handleMouseInput(mouseInputEvent);
 
-		popMatrix();
+		for (Button button : buttons) {
+			if (mouseInputEvent.isClicked() && mouseInputEvent.getLeftKey())
+				button.click(mouseX, mouseY);
+		}
+
+		mouseInputEvent.reset();
 	}
 
 	private void drawHud() {
 		buttons.forEach(Button::draw);
+		speedSlider.draw();
 	}
 
 	@Override
 	public void mouseDragged() {
-		if (mouseButton == LEFT) {
-			viewOffset.add(mouseX - pmouseX, mouseY - pmouseY);
-		}
+		mouseInputEvent.setDragged();
+		updatePressedMouseButtons();
 	}
 
 	@Override
 	public void mousePressed() {
-		Vector2f position = bufferVector2f.set(mouseX, mouseY)
-			.sub(viewOffset)
-			.div(scale);
-
-		Vector2i cell = boardView.getCellAt(position, bufferVector2i);
-		game.toggleCell(cell);
+		mouseInputEvent.setPressed();
+		updatePressedMouseButtons();
 	}
 
 	@Override
 	public void mouseClicked() {
-		for (Button button : buttons) {
-			button.click(mouseX, mouseY);
+		mouseInputEvent.setClicked();
+		updatePressedMouseButtons();
+	}
+
+	@Override
+	public void mouseWheel(MouseEvent event) {
+		mouseInputEvent.setScrolled(event.getCount());
+	}
+
+	private void updatePressedMouseButtons() {
+		switch (mouseButton) {
+		case LEFT -> mouseInputEvent.setLeftKey();
+		case RIGHT -> mouseInputEvent.setRightKey();
+		case CENTER -> mouseInputEvent.setMiddleKey();
 		}
 	}
 
@@ -123,42 +127,9 @@ public class GameOfLifeApplet extends PApplet {
 	public void keyPressed() {
 		switch (key) {
 		case ' ' -> game.togglePause();
-		case '+' -> increaseSpeed();
-		case '-' -> decreaseSpeed();
-		case 'c' -> resetView();
+		case 'c' -> boardView.reset();
 		case 'r' -> game.resetBoard();
 		case 'q' -> game.randomize();
 		}
-	}
-
-	@Override
-	public void mouseWheel(MouseEvent event) {
-		scale = constrain(scale - event.getCount() * 0.5f, minScale, maxScale);
-	}
-
-	private void resetView() {
-		viewOffset.set(windowSize).div(2f);
-		scale = getInitialScale();
-	}
-
-	private void checkWindowSize() {
-		if (windowSize.x != width || windowSize.y != height) {
-			windowSize.set(width, height);
-		}
-	}
-
-	private void increaseSpeed() {
-		game.setFrameTime(game.getFrameTime() - frameTimeIncrement);
-	}
-
-	private void decreaseSpeed() {
-		game.setFrameTime(game.getFrameTime() + frameTimeIncrement);
-	}
-
-	private float getInitialScale() {
-		return constrain(
-			min((float) windowSize.x / boardView.size.x(), (float) windowSize.y / boardView.size.y()),
-			minScale, maxScale
-		);
 	}
 }

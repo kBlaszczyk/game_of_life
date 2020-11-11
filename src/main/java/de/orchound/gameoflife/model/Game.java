@@ -15,7 +15,10 @@ public class Game {
 	private final Random random = new Random();
 
 	private long gameTimeAccumulator = 0L;
-	private long frameTime = 200_000_000L;
+
+	private final long minFrameTime = 50_000_000L;
+	private final long maxFrameTime = 1_000_000_000L;
+	private long frameTime = minFrameTime;
 	private long previousTimestamp = System.nanoTime();
 
 	private boolean paused = true;
@@ -61,12 +64,15 @@ public class Game {
 		}
 	}
 
-	public long getFrameTime() {
-		return frameTime;
-	}
-
-	public void setFrameTime(long target) {
-		frameTime = Math.max(50_000_000L, Math.min(1_000_000_000L, target));
+	/**
+	 * Sets the animation speed depending on the specified value.
+	 * The value is expected to be in the closed interval [0..1].
+	 * Where 0 and 1 represent the slowest and highest animation speed respectively.
+	 * @param value speed indicator [0, 1]
+	 */
+	public void setSpeed(float value) {
+		float speed = Math.max(0f, Math.min(1f, value));
+		frameTime = maxFrameTime - (long) (speed * (maxFrameTime - minFrameTime));
 	}
 
 	public void toggleCell(Vector2ic cell) {

@@ -11,6 +11,8 @@ public abstract class Button {
 
 	private final Runnable action;
 
+	private final Vector2f mousePositionBuffer = new Vector2f();
+
 	public Button(float x, float y, float width, float height, Runnable action) {
 		this.position = new Vector2f(x, y);
 		this.size = new Vector2f(width, height);
@@ -19,7 +21,7 @@ public abstract class Button {
 	}
 
 	public void click(float x, float y) {
-		Vector2f positionButtonSpace = new Vector2f(x, y)
+		Vector2f positionButtonSpace = mousePositionBuffer.set(x, y)
 			.sub(position).sub(halfSize).absolute();
 
 		if (positionButtonSpace.x <= halfSize.x() && positionButtonSpace.y <= halfSize.y())
