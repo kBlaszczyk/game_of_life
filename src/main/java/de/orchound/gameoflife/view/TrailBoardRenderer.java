@@ -2,39 +2,41 @@ package de.orchound.gameoflife.view;
 
 import processing.core.PImage;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class TrailBoardRenderer implements BoardRenderer {
 
-	private final Color setColor = Color.WHITE;
-	private final Color unsetColor = Color.BLACK;
-	private final Color trailColor = Color.BLUE;
+	private final int setColor = Color.WHITE.getRGB();
+	private final int unsetColor = Color.BLACK.getRGB();
+	private final int trailColor = Color.BLUE.getRGB();
 
 	@Override
 	public void render(boolean[] data, PImage target) {
 		target.loadPixels();
 
 		for (int i = 0; i < data.length; i++) {
+			int currentColor = target.pixels[i];
 			if (data[i]) {
-				target.pixels[i] = setColor.getRGB();
-			} else {
-				Color pixel = new Color(target.pixels[i], true);
-				if (pixel.getRGB() != unsetColor.getRGB()) {
-					if (pixel.getAlpha() > 0) {
-						int newAlpha = Math.max(0, pixel.getAlpha() - 10);
-						if (newAlpha > 0) {
-							target.pixels[i] = new Color(
-								trailColor.getRed(), trailColor.getGreen(), trailColor.getBlue(),
-								newAlpha
-							).getRGB();
-						} else {
-							target.pixels[i] = unsetColor.getRGB();
-						}
-					}
-				}
+				target.pixels[i] = setColor;
+			} else if (currentColor != unsetColor) {
+				target.pixels[i] = trailColor(currentColor);
 			}
 		}
 
 		target.updatePixels();
+	}
+
+	private int trailColor(int currentColor) {
+		final int newAlpha = Math.max(0, getAlpha(currentColor) - 10);
+		return newAlpha > 0 ? setAlpha(trailColor, newAlpha) : unsetColor;
+	}
+
+	private int setAlpha(int color, int alpha) {
+		int cleanAlpha = alpha << 24;
+		return color & 0x00FFFFFF | cleanAlpha;
+	}
+
+	private int getAlpha(int color) {
+		return (color >> 24) & 0xFF;
 	}
 }
