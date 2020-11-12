@@ -13,6 +13,7 @@ public class BoardView {
 
 	private final PApplet sketch;
 	private final Game game;
+	private final BoardRenderer boardRenderer = new TrailBoardRenderer();
 
 	private float scale;
 	private final float minScale;
@@ -72,13 +73,7 @@ public class BoardView {
 	}
 
 	private void updateImage(boolean[] data) {
-		boardImage.loadPixels();
-
-		for (int i = 0; i < data.length; i++) {
-			boardImage.pixels[i] = data[i] ? setColor : unsetColor;
-		}
-
-		boardImage.updatePixels();
+		boardRenderer.render(data, boardImage);
 	}
 
 	public void handleMouseInput(MouseInputEvent inputEvent) {
