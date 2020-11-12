@@ -13,7 +13,7 @@ public class BoardView {
 
 	private final PApplet sketch;
 	private final Game game;
-	private final BoardRenderer boardRenderer = new TrailBoardRenderer();
+	private final BoardRenderer boardRenderer;
 
 	private float scale;
 	private final float minScale;
@@ -31,8 +31,9 @@ public class BoardView {
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
 
-	public BoardView(Game game, PApplet sketch) {
+	public BoardView(Game game, PApplet sketch, BoardRenderer renderer) {
 		this.game = game;
+		this.boardRenderer = renderer;
 
 		windowSize = new Vector2i(sketch.sketchWidth(), sketch.sketchHeight());
 		viewOffset = new Vector2f(windowSize).div(2f);
