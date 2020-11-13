@@ -25,8 +25,6 @@ public class BoardView {
 	private final Vector2f viewOffset;
 
 	private final PImage boardImage;
-	private final int setColor;
-	private final int unsetColor;
 
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
@@ -43,8 +41,6 @@ public class BoardView {
 		halfSize = new Vector2f(size).div(2f);
 
 		this.sketch = sketch;
-		setColor = sketch.color(115, 210, 22);
-		unsetColor = sketch.color(0);
 
 		minScale = 1f;
 		maxScale = 40f;
