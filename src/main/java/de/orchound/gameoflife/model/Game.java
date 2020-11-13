@@ -5,7 +5,6 @@ import org.joml.Vector2ic;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -26,8 +25,6 @@ public class Game {
 
 	private final List<Consumer<boolean[]>> boardDataObservers = new ArrayList<>();
 	private final List<Consumer<Boolean>> pauseObservers = new ArrayList<>();
-
-	private boolean paintMode;
 
 	public Game(int width, int height) {
 		board = new Board(width, height);
@@ -82,30 +79,27 @@ public class Game {
 		if (!cellInBoardRange(cell))
 			return;
 
-		if (board.getCellStatus(cell.y(), cell.x())) {
+		if (getCellStatus(cell)) {
 			board.killCell(cell.y(), cell.x());
-			paintMode = false;
-		}
-		else {
+		} else {
 			board.resurrectCell(cell.y(), cell.x());
-			paintMode = true;
 		}
 		notifyBoardDataObservers();
-
-
 	}
 
-	public void setCell(Vector2ic cell) {
-		if (paintMode) {
-			if (!board.getCellStatus(cell.y(), cell.x())) {
+	public void setCell(Vector2ic cell, boolean resurrect) {
+		if (cellInBoardRange(cell) && getCellStatus(cell) != resurrect) {
+			if (resurrect) {
 				board.resurrectCell(cell.y(), cell.x());
-			}
-		} else {
-			if (board.getCellStatus(cell.y(), cell.x())) {
+			} else {
 				board.killCell(cell.y(), cell.x());
 			}
+			notifyBoardDataObservers();
 		}
-		notifyBoardDataObservers();
+	}
+
+	public boolean getCellStatus(Vector2ic cell) {
+		return cellInBoardRange(cell) && board.getCellStatus(cell.y(), cell.x());
 	}
 
 	private boolean cellInBoardRange(Vector2ic cell) {
@@ -131,8 +125,7 @@ public class Game {
 	}
 
 	public void clear() {
-		Arrays.fill(board.target, false);
-		board.makeCurrentStateInitial();
+		board.clear();
 		gameTimeAccumulator = 0;
 		notifyBoardDataObservers();
 	}

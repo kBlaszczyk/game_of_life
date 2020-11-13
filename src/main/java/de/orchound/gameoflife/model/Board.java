@@ -3,6 +3,8 @@ package de.orchound.gameoflife.model;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
+import java.util.Arrays;
+
 public class Board {
 
 	public final Vector2ic size;
@@ -59,13 +61,11 @@ public class Board {
 	}
 
 	public void resurrectCell(int rowIndex, int cellIndex) {
-		if (cellIndex >= 0 & cellIndex < size.x())
-			target[rowIndex * size.x() + cellIndex] = true;
+		target[rowIndex * size.x() + cellIndex] = true;
 	}
 
 	public void killCell(int rowIndex, int cellIndex) {
-		if (cellIndex >= 0 & cellIndex < size.x())
-			target[rowIndex * size.x() + cellIndex] = false;
+		target[rowIndex * size.x() + cellIndex] = false;
 	}
 
 	public int getWidth() {
@@ -82,5 +82,10 @@ public class Board {
 
 	public void makeCurrentStateInitial() {
 		System.arraycopy(target, 0, initial, 0, target.length);
+	}
+
+	public void clear() {
+		Arrays.fill(target, false);
+		makeCurrentStateInitial();
 	}
 }

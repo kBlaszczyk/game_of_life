@@ -18,55 +18,16 @@ class BoardTest {
 	}
 
 	@Test
-	void testResurrectCellZeroCellIndex() {
+	void testResurrectCell() {
 		board.resurrectCell(1, 0);
 		assertTrue(board.getCellStatus(1, 0));
 	}
 
 	@Test
-	void testResurrectCellMaxCellIndex() {
-		board.resurrectCell(1, 19);
-		assertTrue(board.getCellStatus(1, 19));
-	}
-
-	@Test
-	void testResurrectCellNegativeCellIndex() {
-		board.resurrectCell(2, -1);
-		assertFalse(board.getCellStatus(1, 19));
-	}
-
-	@Test
-	void testResurrectCellIndexGreaterThanRowLength() {
-		board.resurrectCell(2, 20);
-		assertFalse(board.getCellStatus(3, 0));
-	}
-
-	@Test
-	void testKillCellZeroCellIndex() {
+	void testKillCell() {
 		board.resurrectCell(1, 0);
 		board.killCell(1, 0);
 		assertFalse(board.getCellStatus(1, 0));
-	}
-
-	@Test
-	void testKillCellMaxCellIndex() {
-		board.resurrectCell(1, 19);
-		board.killCell(1, 19);
-		assertFalse(board.getCellStatus(1, 19));
-	}
-
-	@Test
-	void testKillCellNegativeCellIndex() {
-		board.resurrectCell(1, 19);
-		board.killCell(2, -1);
-		assertTrue(board.getCellStatus(1, 19));
-	}
-
-	@Test
-	void testKillCellIndexGreaterThanRowLength() {
-		board.resurrectCell(3, 0);
-		board.killCell(2, 20);
-		assertTrue(board.getCellStatus(3, 0));
 	}
 
 	@Test
