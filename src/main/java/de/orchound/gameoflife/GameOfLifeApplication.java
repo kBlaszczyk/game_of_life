@@ -22,18 +22,16 @@ public class GameOfLifeApplication implements Runnable {
 	@Option(names = {"--pattern"}, description = "Pattern file to load")
 	private String pattern;
 
+	@Option(names = {"--renderer"}, description = "2D board renderer", defaultValue = "default")
+	private String renderer;
+
 	@Override
 	public void run() {
-		if (pattern != null) {
-			PApplet.runSketch(
-				new String[] {"GameOfLifeApplication"},
-				new GameOfLifeApplet(new Game(Paths.get(pattern)))
-			);
-		} else {
-			PApplet.runSketch(
-				new String[] {"GameOfLifeApplication"},
-				new GameOfLifeApplet(new Game(width, height))
-			);
-		}
+		Game game = pattern != null ? new Game(Paths.get(pattern)) : new Game(width, height);
+
+		PApplet.runSketch(
+			new String[] {"GameOfLifeApplication"},
+			new GameOfLifeApplet(game, renderer)
+		);
 	}
 }
