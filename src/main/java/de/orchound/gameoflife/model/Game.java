@@ -79,12 +79,27 @@ public class Game {
 		if (!cellInBoardRange(cell))
 			return;
 
-		if (board.getCellStatus(cell.y(), cell.x()))
+		if (getCellStatus(cell)) {
 			board.killCell(cell.y(), cell.x());
-		else
+		} else {
 			board.resurrectCell(cell.y(), cell.x());
-
+		}
 		notifyBoardDataObservers();
+	}
+
+	public void setCell(Vector2ic cell, boolean resurrect) {
+		if (cellInBoardRange(cell) && getCellStatus(cell) != resurrect) {
+			if (resurrect) {
+				board.resurrectCell(cell.y(), cell.x());
+			} else {
+				board.killCell(cell.y(), cell.x());
+			}
+			notifyBoardDataObservers();
+		}
+	}
+
+	public boolean getCellStatus(Vector2ic cell) {
+		return cellInBoardRange(cell) && board.getCellStatus(cell.y(), cell.x());
 	}
 
 	private boolean cellInBoardRange(Vector2ic cell) {
@@ -107,6 +122,16 @@ public class Game {
 		board.makeCurrentStateInitial();
 		gameTimeAccumulator = 0;
 		notifyBoardDataObservers();
+	}
+
+	public void clear() {
+		board.clear();
+		gameTimeAccumulator = 0;
+		notifyBoardDataObservers();
+	}
+
+	public void save() {
+		board.makeCurrentStateInitial();
 	}
 
 	public void registerBoardDataObserver(Consumer<boolean[]> observer) {

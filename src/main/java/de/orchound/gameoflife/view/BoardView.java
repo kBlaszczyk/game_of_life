@@ -13,6 +13,7 @@ public class BoardView {
 
 	private final PApplet sketch;
 	private final Game game;
+	private final Painter painter;
 	private final BoardRenderer boardRenderer;
 
 	private float scale;
@@ -31,6 +32,7 @@ public class BoardView {
 
 	public BoardView(Game game, PApplet sketch, BoardRenderer renderer) {
 		this.game = game;
+		painter = new Painter(game);
 		this.boardRenderer = renderer;
 
 		windowSize = new Vector2i(sketch.sketchWidth(), sketch.sketchHeight());
@@ -80,7 +82,19 @@ public class BoardView {
 		}
 
 		if (inputEvent.isPressed() && inputEvent.getLeftKey()) {
-			drawCell(inputEvent.getMouseX(), inputEvent.getMouseY());
+			Vector2ic cell = getCellByMousePosition(inputEvent.getMouseX(), inputEvent.getMouseY());
+			painter.paintOrEraseCell(cell);
+			inputEvent.consume();
+		}
+
+		if (inputEvent.isReleased() && inputEvent.getLeftKey()) {
+			painter.stopPainting();
+			inputEvent.consume();
+		}
+
+		if (inputEvent.isDragged() && inputEvent.getLeftKey()) {
+			Vector2ic cell = getCellByMousePosition(inputEvent.getMouseX(), inputEvent.getMouseY());
+			painter.paintOrEraseCell(cell);
 			inputEvent.consume();
 		}
 
@@ -90,16 +104,15 @@ public class BoardView {
 		}
 	}
 
-	private void drawCell(int x, int y) {
+	private Vector2ic getCellByMousePosition(int x, int y) {
 		Vector2f position = bufferVector2f.set(x, y)
 			.sub(viewOffset)
 			.div(scale)
 			.add(halfSize)
 			.sub((int) halfSize.x(), (int) halfSize.y());
 
-		Vector2i cell = bufferVector2i.set(position, RoundingMode.FLOOR)
+		return bufferVector2i.set(position, RoundingMode.FLOOR)
 			.add((int) halfSize.x(), (int) halfSize.y());
-		game.toggleCell(cell);
 	}
 
 	public void reset() {

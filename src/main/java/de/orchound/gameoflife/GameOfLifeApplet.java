@@ -52,7 +52,9 @@ public class GameOfLifeApplet extends PApplet {
 			pauseButton,
 			new LabeledButton(10, 70, "Reset", this, game::resetBoard),
 			new LabeledButton(10, 100, "Randomize", this, game::randomize),
-			new LabeledButton(10, 130, "Center View", this, boardView::reset)
+			new LabeledButton(10, 130, "Center View", this, boardView::reset),
+			new LabeledButton(10, 195, "Clear", this, game::clear),
+			new LabeledButton(10, 225, "Save", this, game::save)
 		));
 
 		speedSlider = new Slider(10, 160, this, game::setSpeed);
@@ -109,6 +111,12 @@ public class GameOfLifeApplet extends PApplet {
 	}
 
 	@Override
+	public void mouseReleased() {
+		mouseInputEvent.setReleased();
+		updatePressedMouseButtons();
+	}
+
+	@Override
 	public void mouseClicked() {
 		mouseInputEvent.setClicked();
 		updatePressedMouseButtons();
@@ -134,6 +142,8 @@ public class GameOfLifeApplet extends PApplet {
 		case 'c' -> boardView.reset();
 		case 'r' -> game.resetBoard();
 		case 'q' -> game.randomize();
+		case 's' -> game.save();
+		case BACKSPACE -> game.clear();
 		}
 	}
 }

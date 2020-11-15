@@ -18,9 +18,16 @@ class BoardTest {
 	}
 
 	@Test
-	void testSetCellAlive() {
+	void testResurrectCell() {
 		board.resurrectCell(1, 0);
 		assertTrue(board.getCellStatus(1, 0));
+	}
+
+	@Test
+	void testKillCell() {
+		board.resurrectCell(1, 0);
+		board.killCell(1, 0);
+		assertFalse(board.getCellStatus(1, 0));
 	}
 
 	@Test

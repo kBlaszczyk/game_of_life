@@ -3,6 +3,8 @@ package de.orchound.gameoflife.model;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
+import java.util.Arrays;
+
 public class Board {
 
 	public final Vector2ic size;
@@ -80,5 +82,10 @@ public class Board {
 
 	public void makeCurrentStateInitial() {
 		System.arraycopy(target, 0, initial, 0, target.length);
+	}
+
+	public void clear() {
+		Arrays.fill(target, false);
+		makeCurrentStateInitial();
 	}
 }
