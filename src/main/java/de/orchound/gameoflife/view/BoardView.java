@@ -14,6 +14,7 @@ public class BoardView {
 	private final PApplet sketch;
 	private final Game game;
 	private final Painter painter;
+	private final BoardRenderer boardRenderer;
 
 	private float scale;
 	private final float minScale;
@@ -25,15 +26,14 @@ public class BoardView {
 	private final Vector2f viewOffset;
 
 	private final PImage boardImage;
-	private final int setColor;
-	private final int unsetColor;
 
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
 
-	public BoardView(Game game, PApplet sketch) {
+	public BoardView(Game game, PApplet sketch, BoardRenderer renderer) {
 		this.game = game;
 		painter = new Painter(game);
+		this.boardRenderer = renderer;
 
 		windowSize = new Vector2i(sketch.sketchWidth(), sketch.sketchHeight());
 		viewOffset = new Vector2f(windowSize).div(2f);
@@ -43,8 +43,6 @@ public class BoardView {
 		halfSize = new Vector2f(size).div(2f);
 
 		this.sketch = sketch;
-		setColor = sketch.color(115, 210, 22);
-		unsetColor = sketch.color(0);
 
 		minScale = 1f;
 		maxScale = 40f;
@@ -74,13 +72,7 @@ public class BoardView {
 	}
 
 	private void updateImage(boolean[] data) {
-		boardImage.loadPixels();
-
-		for (int i = 0; i < data.length; i++) {
-			boardImage.pixels[i] = data[i] ? setColor : unsetColor;
-		}
-
-		boardImage.updatePixels();
+		boardRenderer.render(data, boardImage);
 	}
 
 	public void handleMouseInput(MouseInputEvent inputEvent) {

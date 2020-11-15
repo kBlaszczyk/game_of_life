@@ -23,6 +23,9 @@ class BoardViewTest {
 	@Mock
 	private PApplet sketch;
 
+	@Mock
+	private BoardRenderer boardRenderer;
+
 	@Spy
 	private final Game game = new Game(10, 5);
 
@@ -32,7 +35,7 @@ class BoardViewTest {
 	public void setUp() {
 		when(sketch.createImage(10, 5, PConstants.RGB))
 			.thenReturn(new PImage(10, 5));
-		boardView = new BoardView(game, sketch);
+		boardView = new BoardView(game, sketch, boardRenderer);
 	}
 
 	@Test

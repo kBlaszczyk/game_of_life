@@ -5,6 +5,8 @@ import de.orchound.gameoflife.processing.Button;
 import de.orchound.gameoflife.processing.LabeledButton;
 import de.orchound.gameoflife.processing.PauseButton;
 import de.orchound.gameoflife.processing.Slider;
+import de.orchound.gameoflife.view.BoardRenderer;
+import de.orchound.gameoflife.view.BoardRendererRegistry;
 import de.orchound.gameoflife.view.BoardView;
 import org.joml.Vector2i;
 import processing.core.PApplet;
@@ -18,6 +20,7 @@ import java.util.List;
 public class GameOfLifeApplet extends PApplet {
 
 	private final Game game;
+	private final BoardRenderer boardRenderer;
 
 	private final Vector2i windowSize = new Vector2i(1280, 720);
 
@@ -27,8 +30,9 @@ public class GameOfLifeApplet extends PApplet {
 
 	private final MouseInputEvent mouseInputEvent = new MouseInputEvent();
 
-	public GameOfLifeApplet(Game game) {
+	public GameOfLifeApplet(Game game, String renderer) {
 		this.game = game;
+		this.boardRenderer = new BoardRendererRegistry().getRenderer(renderer);
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class GameOfLifeApplet extends PApplet {
 		textAlign(PConstants.CENTER);
 		textSize(20);
 
-		boardView = new BoardView(game, this);
+		boardView = new BoardView(game, this, boardRenderer);
 
 		PauseButton pauseButton = new PauseButton(10, 10, this, game::togglePause);
 		game.registerPauseObserver(pauseButton::setPaused);
