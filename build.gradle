@@ -1,6 +1,6 @@
 plugins {
-    id "application"
-    id "idea"
+	id "application"
+	id "idea"
 }
 
 println """
@@ -27,19 +27,32 @@ mainClassName = project.mainClass
 // -------------------------------------------------------------
 
 repositories {
-    mavenCentral()
+	flatDir {
+		dirs 'libs'
+	}
+	mavenCentral()
 }
 
 dependencies {
-    compile "org.joml:joml:1.9.25"
-    compile "info.picocli:picocli:4.5.1"
-    compile "org.processing:core:3.3.7"
+	compile "info.picocli:picocli:4.5.1"
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$project.junitVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$project.junitVersion"
+	implementation(
+		"org.joml:joml:1.9.25",
+		"org.processing:core:3.5.4"
+	)
 
-    testImplementation "org.mockito:mockito-core:$project.mockitoVersion"
-    testImplementation "org.mockito:mockito-junit-jupiter:$project.mockitoVersion"
+	runtimeOnly(
+			"org.jogamp.gluegen:gluegen-rt-main:2.3.2",
+			files("libs/jogl-all.jar")
+	)
+
+	testImplementation(
+		"org.junit.jupiter:junit-jupiter-api:$project.junitVersion",
+		"org.mockito:mockito-core:$project.mockitoVersion",
+		"org.mockito:mockito-junit-jupiter:$project.mockitoVersion"
+	)
+
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$project.junitVersion"
 }
 
 // -------------------------------------------------------------
@@ -47,37 +60,37 @@ dependencies {
 // -------------------------------------------------------------
 
 task fatJar(type: Jar) {
-    baseName = "$project.name-fat"
+	baseName = "$project.name-fat"
 
-    manifest {
-        attributes "Main-Class": project.mainClass
-    }
+	manifest {
+		attributes "Main-Class": project.mainClass
+	}
 
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    } with jar
+	from {
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	} with jar
 
-    configure {
-        group = "build"
-        description = "Generate an executable jar."
-    }
+	configure {
+		group = "build"
+		description = "Generate an executable jar."
+	}
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 wrapper {
-    gradleVersion = "6.5"
-    distributionType = Wrapper.DistributionType.ALL
+	gradleVersion = "6.5"
+	distributionType = Wrapper.DistributionType.ALL
 }
 
 idea {
-    module {
-        jdkName = project.jdkVersion
-        downloadJavadoc = true
-        downloadSources = true
+	module {
+		jdkName = project.jdkVersion
+		downloadJavadoc = true
+		downloadSources = true
 
-        iml {}
-    }
+		iml {}
+	}
 }
