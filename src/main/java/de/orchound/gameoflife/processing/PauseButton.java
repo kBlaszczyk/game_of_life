@@ -8,7 +8,8 @@ public class PauseButton extends Button {
 	private boolean paused = true;
 
 	public PauseButton(float x, float y, PApplet sketch, Runnable action) {
-		super(x, y, 40, 40, action);
+		super(40, 40, action);
+		setPosition(x, y);
 		this.sketch = sketch;
 	}
 

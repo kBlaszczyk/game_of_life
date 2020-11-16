@@ -4,12 +4,12 @@ import processing.core.PApplet;
 
 public class LabeledButton extends Button {
 
-	private final String label;
 	private final PApplet sketch;
+	private final String label;
 
-	public LabeledButton(float x, float y, String label, PApplet sketch, Runnable action) {
+	public LabeledButton(String label, PApplet sketch, Runnable action) {
 		super(
-			x, y, sketch.textWidth(label) + 20,
+			sketch.textWidth(label) + 20,
 			sketch.textAscent() + sketch.textDescent(), action
 		);
 
