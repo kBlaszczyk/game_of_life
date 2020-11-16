@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 public class Slider {
 
 	private float value = 0.5f;
+	private boolean grabbed = false;
 
 	private final Vector2fc position;
 	private final Vector2fc size = new Vector2f(60, 30);
@@ -43,19 +44,31 @@ public class Slider {
 	}
 
 	public void handleMouseInput(MouseInputEvent inputEvent) {
-		if (!mouseInputRelevant(inputEvent))
-			return;
+		if (sliderLeftKeyPress(inputEvent))
+			grabbed = true;
 
-		value = (inputEvent.getMouseX() - position.x()) / size.x();
-		action.accept(Math.min(1f, Math.max(0f, value)));
-		inputEvent.consume();
+		if (grabbed) {
+			value = PApplet.constrain(
+				(inputEvent.getMouseX() - position.x()) / size.x(), 0f, 1f
+			);
+			action.accept(value);
+
+			if (sliderDropped(inputEvent))
+				grabbed = false;
+			inputEvent.consume();
+		}
 	}
 
-	private boolean mouseInputRelevant(MouseInputEvent inputEvent) {
+	private boolean sliderLeftKeyPress(MouseInputEvent inputEvent) {
 		return (inputEvent.getLeftKey()
-			&& (inputEvent.isPressed() || inputEvent.isDragged())
+			&& inputEvent.isPressed()
 			&& hitByCursor(inputEvent.getMouseX(), inputEvent.getMouseY())
 		);
+	}
+
+	private boolean sliderDropped(MouseInputEvent inputEvent) {
+		return inputEvent.getLeftKey()
+			&& (inputEvent.isReleased() || inputEvent.isClicked());
 	}
 
 	private boolean hitByCursor(int x, int y) {
