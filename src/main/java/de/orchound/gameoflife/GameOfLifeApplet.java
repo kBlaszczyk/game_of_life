@@ -5,6 +5,7 @@ import de.orchound.gameoflife.processing.Button;
 import de.orchound.gameoflife.processing.LabeledButton;
 import de.orchound.gameoflife.processing.PauseButton;
 import de.orchound.gameoflife.processing.Slider;
+import de.orchound.gameoflife.processing.ui.UIElementContainer;
 import de.orchound.gameoflife.view.BoardRenderer;
 import de.orchound.gameoflife.view.BoardRendererRegistry;
 import de.orchound.gameoflife.view.BoardView;
@@ -25,7 +26,9 @@ public class GameOfLifeApplet extends PApplet {
 	private final Vector2i windowSize = new Vector2i(1280, 720);
 
 	private BoardView boardView;
+	private final UIElementContainer buttonsContainer = new UIElementContainer(10, 10, this);
 	private final List<Button> buttons = new ArrayList<>();
+	private PauseButton pauseButton;
 	private Slider speedSlider;
 
 	private final MouseInputEvent mouseInputEvent = new MouseInputEvent();
@@ -45,19 +48,20 @@ public class GameOfLifeApplet extends PApplet {
 
 		boardView = new BoardView(game, this, boardRenderer);
 
-		PauseButton pauseButton = new PauseButton(10, 10, this, game::togglePause);
+		speedSlider = new Slider(100, 300, this, game::setSpeed);
+		pauseButton = new PauseButton(10, 300, this, game::togglePause);
 		game.registerPauseObserver(pauseButton::setPaused);
 
 		buttons.addAll(Arrays.asList(
-			pauseButton,
-			new LabeledButton(10, 70, "Reset", this, game::resetBoard),
-			new LabeledButton(10, 100, "Randomize", this, game::randomize),
-			new LabeledButton(10, 130, "Center View", this, boardView::reset),
-			new LabeledButton(10, 195, "Clear", this, game::clear),
-			new LabeledButton(10, 225, "Save", this, game::save)
+			new LabeledButton("Reset", this, game::resetBoard),
+			new LabeledButton("Randomize", this, game::randomize),
+			new LabeledButton("Center View", this, boardView::reset),
+			new LabeledButton("Clear", this, game::clear),
+			new LabeledButton("Save", this, game::save)
 		));
 
-		speedSlider = new Slider(10, 160, this, game::setSpeed);
+		buttons.forEach(buttonsContainer::addElement);
+		buttons.add(pauseButton);
 	}
 
 	@Override
@@ -94,7 +98,8 @@ public class GameOfLifeApplet extends PApplet {
 	}
 
 	private void drawHud() {
-		buttons.forEach(Button::draw);
+		buttonsContainer.draw();
+		pauseButton.draw();
 		speedSlider.draw();
 	}
 
