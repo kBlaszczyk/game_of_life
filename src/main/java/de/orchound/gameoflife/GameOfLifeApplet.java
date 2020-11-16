@@ -62,7 +62,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	@Override
 	public void settings() {
-		size(windowSize.x, windowSize.y);
+		size(windowSize.x, windowSize.y, P3D);
 		noSmooth();
 	}
 
@@ -129,21 +129,39 @@ public class GameOfLifeApplet extends PApplet {
 
 	private void updatePressedMouseButtons() {
 		switch (mouseButton) {
-		case LEFT -> mouseInputEvent.setLeftKey();
-		case RIGHT -> mouseInputEvent.setRightKey();
-		case CENTER -> mouseInputEvent.setMiddleKey();
+		case LEFT:
+			mouseInputEvent.setLeftKey();
+			break;
+		case RIGHT:
+			mouseInputEvent.setRightKey();
+			break;
+		case CENTER:
+			mouseInputEvent.setMiddleKey();
+			break;
 		}
 	}
 
 	@Override
 	public void keyPressed() {
 		switch (key) {
-		case ' ' -> game.togglePause();
-		case 'c' -> boardView.reset();
-		case 'r' -> game.resetBoard();
-		case 'q' -> game.randomize();
-		case 's' -> game.save();
-		case BACKSPACE -> game.clear();
+		case ' ':
+			game.togglePause();
+			break;
+		case 'c':
+			boardView.reset();
+			break;
+		case 'r':
+			game.resetBoard();
+			break;
+		case 'q':
+			game.randomize();
+			break;
+		case 's':
+			game.save();
+			break;
+		case BACKSPACE:
+			game.clear();
+			break;
 		}
 	}
 }
