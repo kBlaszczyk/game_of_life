@@ -16,12 +16,14 @@ class RleBoardParserTest {
 	void testParse() {
 		Path file = new File("src/test/resources/pattern.rle").toPath();
 		Board board = boardParser.parse(file);
-		assertEquals(10, board.getWidth());
-		assertEquals(9, board.getHeight());
-		assertFalse(board.getCellStatus(0, 0));
-		assertFalse(board.getCellStatus(8, 9));
-		assertFalse(board.getCellStatus(4, 4));
-		assertTrue(board.getCellStatus(4, 1));
-		assertTrue(board.getCellStatus(2, 3));
+		assertEquals(101, board.getWidth());
+		assertEquals(101, board.getHeight());
+
+		assertTrue(board.getCellStatus(41, 45));
+		assertFalse(board.getCellStatus(42, 46));
+		assertTrue(board.getCellStatus(44, 48));
+		assertTrue(board.getCellStatus(45, 50));
+		assertTrue(board.getCellStatus(48, 50));
+		assertFalse(board.getCellStatus(49, 50));
 	}
 }
