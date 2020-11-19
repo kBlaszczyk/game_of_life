@@ -30,9 +30,9 @@ public class BoardView {
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
 
-	public BoardView(Game game, PApplet sketch, BoardRenderer renderer) {
+	public BoardView(Game game, PApplet sketch, BoardRenderer renderer, Painter painter) {
 		this.game = game;
-		painter = new Painter(game);
+		this.painter = painter;
 		this.boardRenderer = renderer;
 
 		windowSize = new Vector2i(sketch.sketchWidth(), sketch.sketchHeight());
@@ -83,7 +83,7 @@ public class BoardView {
 
 		if (inputEvent.isPressed() && inputEvent.getLeftKey()) {
 			Vector2ic cell = getCellByMousePosition(inputEvent.getMouseX(), inputEvent.getMouseY());
-			painter.paintOrEraseCell(cell);
+			painter.paintAction(cell);
 			inputEvent.consume();
 		}
 
@@ -94,7 +94,7 @@ public class BoardView {
 
 		if (inputEvent.isDragged() && inputEvent.getLeftKey()) {
 			Vector2ic cell = getCellByMousePosition(inputEvent.getMouseX(), inputEvent.getMouseY());
-			painter.paintOrEraseCell(cell);
+			painter.paintAction(cell);
 			inputEvent.consume();
 		}
 

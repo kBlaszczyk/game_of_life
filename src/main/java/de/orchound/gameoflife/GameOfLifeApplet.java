@@ -8,6 +8,7 @@ import de.orchound.gameoflife.processing.Slider;
 import de.orchound.gameoflife.view.BoardRenderer;
 import de.orchound.gameoflife.view.BoardRendererRegistry;
 import de.orchound.gameoflife.view.BoardView;
+import de.orchound.gameoflife.view.Painter;
 import org.joml.Vector2i;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -24,6 +25,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	private final Vector2i windowSize = new Vector2i(1280, 720);
 
+	private Painter painter;
 	private BoardView boardView;
 	private final List<Button> buttons = new ArrayList<>();
 	private Slider speedSlider;
@@ -32,6 +34,7 @@ public class GameOfLifeApplet extends PApplet {
 
 	public GameOfLifeApplet(Game game, String renderer) {
 		this.game = game;
+		this.painter = new Painter(game);
 		this.boardRenderer = new BoardRendererRegistry().getRenderer(renderer);
 	}
 
@@ -43,7 +46,7 @@ public class GameOfLifeApplet extends PApplet {
 		textAlign(PConstants.CENTER);
 		textSize(20);
 
-		boardView = new BoardView(game, this, boardRenderer);
+		boardView = new BoardView(game, this, boardRenderer, painter);
 
 		PauseButton pauseButton = new PauseButton(10, 10, this, game::togglePause);
 		game.registerPauseObserver(pauseButton::setPaused);
@@ -54,7 +57,8 @@ public class GameOfLifeApplet extends PApplet {
 			new LabeledButton(10, 100, "Randomize", this, game::randomize),
 			new LabeledButton(10, 130, "Center View", this, boardView::reset),
 			new LabeledButton(10, 195, "Clear", this, game::clear),
-			new LabeledButton(10, 225, "Save", this, game::save)
+			new LabeledButton(10, 225, "Save", this, game::save),
+			new LabeledButton(10, 255, "Fill", this, painter::setFillMode)
 		));
 
 		speedSlider = new Slider(10, 160, this, game::setSpeed);
@@ -143,6 +147,7 @@ public class GameOfLifeApplet extends PApplet {
 		case 'r' -> game.resetBoard();
 		case 'q' -> game.randomize();
 		case 's' -> game.save();
+		case 'f' -> painter.setFillMode();
 		case BACKSPACE -> game.clear();
 		}
 	}
