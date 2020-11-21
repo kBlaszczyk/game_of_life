@@ -11,10 +11,14 @@ import java.util.regex.Pattern;
 
 public class RleBoardParser implements BoardParser {
 
+	private final int extraBoardSize = 80;
+	private final int halfExtraBoardSize = extraBoardSize / 2;
+	private final Pattern dimensionPattern = Pattern.compile("x\\s?=\\s?(\\d+),\\s?y\\s=\\s?(\\d+)");
+	private final Pattern itemPattern = Pattern.compile("(\\d*)([ob$])");
+
+	private int rowIndex = halfExtraBoardSize;
+	private int cellIndex = halfExtraBoardSize;
 	private Board board;
-	Pattern dimensionPattern = Pattern.compile("x\\s?=\\s?(\\d+),\\s?y\\s=\\s?(\\d+)");
-	Pattern rulePattern = Pattern.compile("([0-9]*)([ob])");
-	int rowIndex = 0;
 
 	@Override
 	public Board parse(Path file) {
@@ -25,7 +29,8 @@ public class RleBoardParser implements BoardParser {
 		} catch (IOException e) {
 			throw new UncheckedIOException("Could not read file " + file, e);
 		}
-		rowIndex = 0;
+
+		board.makeCurrentStateInitial();
 		return board;
 	}
 
@@ -33,8 +38,8 @@ public class RleBoardParser implements BoardParser {
 		Matcher dimensionMatcher = dimensionPattern.matcher(line);
 		if (dimensionMatcher.find()) {
 			board = new Board(
-				Integer.parseInt(dimensionMatcher.group(1)),
-				Integer.parseInt(dimensionMatcher.group(2))
+				Integer.parseInt(dimensionMatcher.group(1)) + extraBoardSize,
+				Integer.parseInt(dimensionMatcher.group(2)) + extraBoardSize
 			);
 		} else {
 			parseBoardData(line);
@@ -42,23 +47,23 @@ public class RleBoardParser implements BoardParser {
 	}
 
 	private void parseBoardData(String boardData) {
-		String[] lines = boardData.split("\\$");
-		int cellRepeat;
-		boolean cellStatus;
+		Matcher itemMatcher = itemPattern.matcher(boardData);
 
-		for (String line : lines) {
-			int cellIndex = 0;
-			Matcher ruleMatcher = rulePattern.matcher(line);
-			while (ruleMatcher.find()) {
-				String digitGroup = ruleMatcher.group(1);
-				cellRepeat = digitGroup.isEmpty() ? 1 : Integer.parseInt(digitGroup);
-				cellStatus = ruleMatcher.group(2).equals("o");
-				for (int r = 0; r < cellRepeat; r++) {
+		while (itemMatcher.find()) {
+			String digitGroup = itemMatcher.group(1);
+			int cellRepetition = digitGroup.isEmpty() ? 1 : Integer.parseInt(digitGroup);
+
+			String tag = itemMatcher.group(2);
+			if (tag.equals("$")) {
+				rowIndex += cellRepetition;
+				cellIndex = halfExtraBoardSize;
+			} else {
+				boolean cellStatus = tag.equals("o");
+				for (int r = 0; r < cellRepetition; r++) {
 					board.target[rowIndex * board.getWidth() + cellIndex] = cellStatus;
 					cellIndex++;
 				}
 			}
-			rowIndex++;
 		}
 	}
 }
