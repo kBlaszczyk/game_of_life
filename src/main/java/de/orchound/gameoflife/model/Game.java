@@ -102,7 +102,7 @@ public class Game {
 		return cellInBoardRange(cell) && board.getCellStatus(cell.y(), cell.x());
 	}
 
-	private boolean cellInBoardRange(Vector2ic cell) {
+	public boolean cellInBoardRange(Vector2ic cell) {
 		return Math.min(cell.x(), cell.y()) >= 0
 			&& cell.x() < board.getWidth()
 			&& cell.y() < board.getHeight();
