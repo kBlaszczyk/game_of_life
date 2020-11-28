@@ -29,13 +29,15 @@ class BoardViewTest {
 	@Spy
 	private final Game game = new Game(10, 5);
 
+	private final Painter painter = new Painter(game);
+
 	private BoardView boardView;
 
 	@BeforeEach
 	public void setUp() {
 		when(sketch.createImage(10, 5, PConstants.RGB))
 			.thenReturn(new PImage(10, 5));
-		boardView = new BoardView(game, sketch, boardRenderer);
+		boardView = new BoardView(game, sketch, boardRenderer, painter);
 	}
 
 	@Test
