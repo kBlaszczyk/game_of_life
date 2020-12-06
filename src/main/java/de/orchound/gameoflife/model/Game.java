@@ -26,8 +26,8 @@ public class Game {
 	private final List<Consumer<boolean[]>> boardDataObservers = new ArrayList<>();
 	private final List<Consumer<Boolean>> pauseObservers = new ArrayList<>();
 
-	public Game(int width, int height) {
-		board = new Board(width, height);
+	public Game(int width, int height, String ruleString) {
+		board = new Board(width, height, ruleString);
 		randomize();
 	}
 

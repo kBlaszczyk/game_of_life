@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
 
-	Board board = new Board(20, 10);
+	Board board = new Board(20, 10, "B3/S23");
 	boolean[] initialState = board.target.clone();
 
 	@BeforeEach
