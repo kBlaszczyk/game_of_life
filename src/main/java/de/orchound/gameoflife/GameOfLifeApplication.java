@@ -19,6 +19,9 @@ public class GameOfLifeApplication implements Runnable {
 	@Option(names = {"--height"}, description = "Board height", defaultValue = "100")
 	private int height;
 
+	@Option(names = {"--rule"}, description = "Rulestring for producing generations", defaultValue = "B3/S23")
+	private String ruleString;
+
 	@Option(names = {"--pattern"}, description = "Pattern file to load")
 	private String pattern;
 
@@ -27,7 +30,7 @@ public class GameOfLifeApplication implements Runnable {
 
 	@Override
 	public void run() {
-		Game game = pattern != null ? new Game(Paths.get(pattern)) : new Game(width, height);
+		Game game = pattern != null ? new Game(Paths.get(pattern)) : new Game(width, height, ruleString);
 
 		PApplet.runSketch(
 			new String[] {"GameOfLifeApplication"},

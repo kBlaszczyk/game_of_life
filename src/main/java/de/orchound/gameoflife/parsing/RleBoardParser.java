@@ -13,7 +13,7 @@ public class RleBoardParser implements BoardParser {
 
 	private final int extraBoardSize = 80;
 	private final int halfExtraBoardSize = extraBoardSize / 2;
-	private final Pattern dimensionPattern = Pattern.compile("x\\s?=\\s?(\\d+),\\s?y\\s=\\s?(\\d+)");
+	private final Pattern dimensionPattern = Pattern.compile("x\\s?=\\s?(\\d+),\\s?y\\s=\\s?(\\d+),\\srule\\s=\\s(B\\d+/S\\d+)");
 	private final Pattern itemPattern = Pattern.compile("(\\d*)([ob$])");
 
 	private int rowIndex = halfExtraBoardSize;
@@ -39,7 +39,8 @@ public class RleBoardParser implements BoardParser {
 		if (dimensionMatcher.find()) {
 			board = new Board(
 				Integer.parseInt(dimensionMatcher.group(1)) + extraBoardSize,
-				Integer.parseInt(dimensionMatcher.group(2)) + extraBoardSize
+				Integer.parseInt(dimensionMatcher.group(2)) + extraBoardSize,
+				dimensionMatcher.group(3)
 			);
 		} else {
 			parseBoardData(line);

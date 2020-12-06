@@ -12,10 +12,12 @@ public class Board {
 	private final boolean[] initial;
 	public boolean[] target;
 	private boolean[] source;
+	private Rule rule;
 
-	public Board(int width, int height) {
+	public Board(int width, int height, String ruleString) {
 		size = new Vector2i(width, height);
 		int cellsCount = width * height;
+		rule = new Rule(ruleString);
 
 		source = new boolean[cellsCount];
 		target = new boolean[cellsCount];
@@ -31,7 +33,7 @@ public class Board {
 			for (int j = 0; j < size.x(); j++) {
 				int livingNeighborsCount = countLivingNeighbors(i, j);
 				boolean sourceCell = source[i * size.x() + j];
-				target[i * size.x() + j] = determineCellStatus(sourceCell, livingNeighborsCount);
+				target[i * size.x() + j] = rule.determineCellStatus(sourceCell, livingNeighborsCount);
 			}
 		}
 	}
@@ -49,11 +51,6 @@ public class Board {
 			}
 		}
 		return livingNeighborsCount;
-	}
-
-	private boolean determineCellStatus(boolean cell, int livingNeighborsCount) {
-		return cell ? livingNeighborsCount >= 2 && livingNeighborsCount <= 3 :
-			livingNeighborsCount == 3;
 	}
 
 	public boolean getCellStatus(int rowIndex, int cellIndex) {

@@ -27,7 +27,7 @@ class BoardViewTest {
 	private BoardRenderer boardRenderer;
 
 	@Spy
-	private final Game game = new Game(10, 5);
+	private final Game game = new Game(10, 5, "B3/S23");
 
 	private BoardView boardView;
 
