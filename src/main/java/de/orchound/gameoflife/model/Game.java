@@ -98,6 +98,17 @@ public class Game {
 		}
 	}
 
+	public void setCellSilently(Vector2ic cell, boolean resurrect) {
+		if (cellInBoardRange(cell) && getCellStatus(cell) != resurrect) {
+			if (resurrect) {
+				board.resurrectCell(cell.y(), cell.x());
+			} else {
+				board.killCell(cell.y(), cell.x());
+			}
+			notifyBoardDataObservers();
+		}
+	}
+
 	public boolean getCellStatus(Vector2ic cell) {
 		return cellInBoardRange(cell) && board.getCellStatus(cell.y(), cell.x());
 	}
@@ -139,10 +150,14 @@ public class Game {
 		observer.accept(board.target);
 	}
 
-	public void notifyBoardDataObservers() {
+	private void notifyBoardDataObservers() {
 		for (Consumer<boolean[]> observer : boardDataObservers) {
 			observer.accept(board.target);
 		}
+	}
+
+	public void stateChangeComplete() {
+		notifyBoardDataObservers();
 	}
 
 	public void registerPauseObserver(Consumer<Boolean> observer) {
