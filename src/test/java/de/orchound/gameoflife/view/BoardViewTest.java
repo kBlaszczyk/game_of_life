@@ -2,6 +2,8 @@ package de.orchound.gameoflife.view;
 
 import de.orchound.gameoflife.MouseInputEvent;
 import de.orchound.gameoflife.model.Game;
+import de.orchound.gameoflife.painting.Painter;
+import de.orchound.gameoflife.painting.TogglePainter;
 import org.joml.Vector2i;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,7 @@ class BoardViewTest {
 	@Spy
 	private final Game game = new Game(10, 5);
 
-	private final Painter painter = new Painter(game);
+	private final Painter painter = new TogglePainter(game);
 
 	private BoardView boardView;
 
