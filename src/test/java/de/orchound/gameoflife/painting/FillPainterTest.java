@@ -20,14 +20,12 @@ public class FillPainterTest {
 
 	@Test
 	void testPaint() {
-		game.clear();
-
 		for (int i = 0; i < 3; i ++) {
-			game.toggleCell(new Vector2i(i, 2));
+			game.setCell(new Vector2i(i, 2), true);
 		}
 
 		for (int i = 0; i < 2; i ++) {
-			game.toggleCell(new Vector2i(2, i));
+			game.setCell(new Vector2i(2, i), true);
 		}
 
 		Vector2ic cell = new Vector2i(1, 1);

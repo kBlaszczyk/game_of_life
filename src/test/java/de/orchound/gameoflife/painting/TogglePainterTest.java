@@ -16,23 +16,22 @@ public class TogglePainterTest {
 	@BeforeEach
 	void setUp() {
 		game.clear();
+		game.setCell(new Vector2i(2, 1), true);
+		game.setCell(new Vector2i(2, 3), true);
 	}
 
 	@Test
 	void testPaint() {
-		game.clear();
-		Vector2ic cell = new Vector2i(2, 2);
-		painter.paint(cell);
 
-		assertTrue(game.getCellStatus(new Vector2i(2, 2)));
-
-
-		for (int i = 0; i <= game.getSize().x(); i++) {
-			for (int j = 0; j <= game.getSize().y(); j++) {
-				if (i != 2 && j != 2) {
-					assertFalse(game.getCellStatus(new Vector2i(i, j)));
-				}
-			}
+		for (int i = 0; i < 3; i++) {
+			Vector2ic cell = new Vector2i(2, i);
+			painter.paint(cell);
+			assertTrue(game.getCellStatus(cell));
 		}
+
+		painter.stopPainting();
+		Vector2ic cell = new Vector2i(2, 3);
+		painter.paint(new Vector2i(2, 3));
+		assertFalse(game.getCellStatus(cell));
 	}
 }

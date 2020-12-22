@@ -17,8 +17,8 @@ public class FillPainter implements Painter {
 	private void fillCells(Vector2ic cell) {
 		if (game.getCellStatus(cell) != paintMode && game.cellInBoardRange(cell)) {
 			game.setCellSilently(cell, paintMode);
-			fillCells(new Vector2i(cell.x(), cell.y()+1));
-			fillCells(new Vector2i(cell.x(), cell.y()-1));
+			fillCells(new Vector2i(cell.x(), cell.y() + 1));
+			fillCells(new Vector2i(cell.x(), cell.y() - 1));
 			fillCells(new Vector2i(cell.x() + 1, cell.y()));
 			fillCells(new Vector2i(cell.x() - 1, cell.y()));
 		}

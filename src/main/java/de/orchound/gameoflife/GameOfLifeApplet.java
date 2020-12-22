@@ -27,7 +27,6 @@ public class GameOfLifeApplet extends PApplet {
 
 	private final Vector2i windowSize = new Vector2i(1280, 720);
 
-	// private PainterPicker painterPicker;
 	private final Painter togglePainter;
 	private final Painter fillPainter;
 	private BoardView boardView;
@@ -161,11 +160,9 @@ public class GameOfLifeApplet extends PApplet {
 
 	private void setFillPainter() {
 		boardView.setPainter(fillPainter);
-		System.out.println("fill mode");
 	}
 
 	private void setTogglePainter() {
 		boardView.setPainter(togglePainter);
-		System.out.println("toggle mode");
 	}
 }

@@ -105,7 +105,6 @@ public class Game {
 			} else {
 				board.killCell(cell.y(), cell.x());
 			}
-			notifyBoardDataObservers();
 		}
 	}
 
@@ -115,8 +114,8 @@ public class Game {
 
 	public boolean cellInBoardRange(Vector2ic cell) {
 		return Math.min(cell.x(), cell.y()) >= 0
-			&& cell.x() < board.getWidth()
-			&& cell.y() < board.getHeight();
+			&& cell.x() < board.getHeight()
+			&& cell.y() < board.getWidth();
 	}
 
 	public void resetBoard() {
@@ -129,7 +128,6 @@ public class Game {
 		for (int i = 0; i < board.target.length; i++) {
 			board.target[i] = random.nextBoolean();
 		}
-
 		board.makeCurrentStateInitial();
 		gameTimeAccumulator = 0;
 		notifyBoardDataObservers();
