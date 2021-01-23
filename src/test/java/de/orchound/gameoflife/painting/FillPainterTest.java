@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FillPainterTest {
-	Game game = new Game(6, 6);
+	Game game = new Game(6, 8);
 	FillPainter fillPainter = new FillPainter(game);
 
 	@BeforeEach
@@ -19,35 +19,55 @@ public class FillPainterTest {
 	}
 
 	@Test
-	void testPaint() {
-		for (int i = 0; i < 3; i ++) {
-			game.setCell(new Vector2i(i, 2), true);
+	void testFillBoard() {
+		Vector2ic cell = new Vector2i(5, 5);
+		fillPainter.paint(cell);
+		for (int i = 0; i < game.getSize().x(); i++) {
+			for (int j = 0; j < game.getSize().y(); j++) {
+				assertTrue(game.getCellStatus(new Vector2i(i, j)));
+			}
+		}
+	}
+
+	@Test
+	void testFillSquare() {
+		for (int i = 1; i < 5; i++) {
+			game.setCell(new Vector2i(i, 1), true);
 		}
 
-		for (int i = 0; i < 2; i ++) {
-			game.setCell(new Vector2i(2, i), true);
+		for (int i = 2; i < 5; i++) {
+			game.setCell(new Vector2i(1, i), true);
 		}
 
-		Vector2ic cell = new Vector2i(1, 1);
+		for (int i = 2; i < 5; i++) {
+			game.setCell(new Vector2i(4, i), true);
+		}
 
+		game.setCell(new Vector2i(2, 4), true);
+		game.setCell(new Vector2i(3, 4), true);
+
+		Vector2ic cell = new Vector2i(2, 2);
 		fillPainter.paint(cell);
 
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
+		for (int i = 1; i < 5; i++) {
+			for (int j = 1; j < 5; j++) {
 				assertTrue(game.getCellStatus(new Vector2i(i, j)));
 			}
 		}
 
-		for (int i = 3; i < 6; i++ ) {
-			for (int j = 0; j < 6; j++) {
+		for (int i = 0; i < game.getSize().x(); i++) {
+			assertFalse(game.getCellStatus(new Vector2i(i, 0)));
+		}
+
+		for (int i = 0; i < game.getSize().x(); i++) {
+			for (int j = 5; j < game.getSize().y(); j++) {
 				assertFalse(game.getCellStatus(new Vector2i(i, j)));
 			}
 		}
 
-		for (int i = 0; i < 3; i++ ) {
-			for (int j = 3; j < 6; j++) {
-				assertFalse(game.getCellStatus(new Vector2i(i, j)));
-			}
+		for (int i = 1; i < 4; i++) {
+			assertFalse(game.getCellStatus(new Vector2i(0, i)));
+			assertFalse(game.getCellStatus(new Vector2i(5, i)));
 		}
 	}
 }
