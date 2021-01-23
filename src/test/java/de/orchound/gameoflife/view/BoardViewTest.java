@@ -50,6 +50,6 @@ class BoardViewTest {
 		inputEvent.setMousePosition(0, 0);
 
 		boardView.handleMouseInput(inputEvent);
-		verify(game).toggleCell(ArgumentMatchers.eq(new Vector2i(5, 2)));
+		verify(painter).paint(ArgumentMatchers.eq(new Vector2i(5, 2)));
 	}
 }

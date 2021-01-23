@@ -114,8 +114,8 @@ public class Game {
 
 	public boolean cellInBoardRange(Vector2ic cell) {
 		return Math.min(cell.x(), cell.y()) >= 0
-			&& cell.x() < board.getHeight()
-			&& cell.y() < board.getWidth();
+			&& cell.x() < board.getWidth()
+			&& cell.y() < board.getHeight();
 	}
 
 	public void resetBoard() {
