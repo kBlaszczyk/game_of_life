@@ -11,27 +11,55 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TogglePainterTest {
 
-	Game game = new Game(6, 6);
+	Game game = new Game(3, 1);
 	TogglePainter painter = new TogglePainter(game);
+	Vector2ic cell1 = new Vector2i(0, 0);
+	Vector2ic cell2 = new Vector2i(1, 0);
+	Vector2ic cell3 = new Vector2i(2, 0);
+
 	@BeforeEach
 	void setUp() {
 		game.clear();
-		game.setCell(new Vector2i(2, 1), true);
-		game.setCell(new Vector2i(2, 3), true);
 	}
 
 	@Test
-	void testPaint() {
+	void testPaintFalseToTrue() {
 
-		for (int i = 0; i < 3; i++) {
-			Vector2ic cell = new Vector2i(2, i);
-			painter.paint(cell);
-			assertTrue(game.getCellStatus(cell));
-		}
+		game.setCell(cell2, true);
 
+		painter.paint(cell1);
+		painter.paint(cell2);
+		painter.paint(cell2);
+
+		assertTrue(game.getCellStatus(cell1));
+		assertTrue(game.getCellStatus(cell2));
+		assertTrue(game.getCellStatus(cell3));
+	}
+
+	@Test
+	void testPaintTrueToFalse() {
+
+		game.setCell(cell1, true);
+		game.setCell(cell3, true);
+
+		painter.paint(cell1);
+		painter.paint(cell2);
+		painter.paint(cell3);
+
+		assertFalse(game.getCellStatus(cell1));
+		assertFalse(game.getCellStatus(cell2));
+		assertFalse(game.getCellStatus(cell3));
+	}
+
+	@Test
+	void testStopPainting() {
+		game.setCell(cell2, true);
+		painter.paint(cell1);
 		painter.stopPainting();
-		Vector2ic cell = new Vector2i(2, 3);
-		painter.paint(new Vector2i(2, 3));
-		assertFalse(game.getCellStatus(cell));
+		painter.paint(cell2);
+
+		assertTrue(game.getCellStatus(cell1));
+		assertFalse(game.getCellStatus(cell2));
+
 	}
 }
