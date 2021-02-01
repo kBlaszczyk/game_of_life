@@ -33,41 +33,19 @@ public class FillPainterTest {
 	void testFillSquare() {
 		for (int i = 1; i < 5; i++) {
 			game.setCell(new Vector2i(i, 1), true);
-		}
-
-		for (int i = 2; i < 5; i++) {
 			game.setCell(new Vector2i(1, i), true);
-		}
-
-		for (int i = 2; i < 5; i++) {
 			game.setCell(new Vector2i(4, i), true);
+			game.setCell(new Vector2i(i, 4), true);
 		}
-
-		game.setCell(new Vector2i(2, 4), true);
-		game.setCell(new Vector2i(3, 4), true);
 
 		Vector2ic cell = new Vector2i(2, 2);
 		fillPainter.paint(cell);
 
-		for (int i = 1; i < 5; i++) {
-			for (int j = 1; j < 5; j++) {
-				assertTrue(game.getCellStatus(new Vector2i(i, j)));
-			}
-		}
-
-		for (int i = 0; i < game.getSize().x(); i++) {
-			assertFalse(game.getCellStatus(new Vector2i(i, 0)));
-		}
-
-		for (int i = 0; i < game.getSize().x(); i++) {
-			for (int j = 5; j < game.getSize().y(); j++) {
-				assertFalse(game.getCellStatus(new Vector2i(i, j)));
-			}
-		}
-
-		for (int i = 1; i < 4; i++) {
+		for (int i = 0; i < 6; i++) {
 			assertFalse(game.getCellStatus(new Vector2i(0, i)));
+			assertFalse(game.getCellStatus(new Vector2i(i, 0)));
 			assertFalse(game.getCellStatus(new Vector2i(5, i)));
+			assertFalse(game.getCellStatus(new Vector2i(i, 5)));
 		}
 	}
 }
