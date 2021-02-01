@@ -1,6 +1,9 @@
 package de.orchound.gameoflife;
 
 import de.orchound.gameoflife.model.Game;
+import de.orchound.gameoflife.painting.FillPainter;
+import de.orchound.gameoflife.painting.Painter;
+import de.orchound.gameoflife.painting.TogglePainter;
 import de.orchound.gameoflife.processing.Button;
 import de.orchound.gameoflife.processing.LabeledButton;
 import de.orchound.gameoflife.processing.PauseButton;
@@ -24,6 +27,8 @@ public class GameOfLifeApplet extends PApplet {
 
 	private final Vector2i windowSize = new Vector2i(1280, 720);
 
+	private final Painter togglePainter;
+	private final Painter fillPainter;
 	private BoardView boardView;
 	private final List<Button> buttons = new ArrayList<>();
 	private Slider speedSlider;
@@ -32,6 +37,8 @@ public class GameOfLifeApplet extends PApplet {
 
 	public GameOfLifeApplet(Game game, String renderer) {
 		this.game = game;
+		this.togglePainter = new TogglePainter(game);
+		this.fillPainter = new FillPainter(game);
 		this.boardRenderer = new BoardRendererRegistry().getRenderer(renderer);
 	}
 
@@ -43,7 +50,7 @@ public class GameOfLifeApplet extends PApplet {
 		textAlign(PConstants.CENTER);
 		textSize(20);
 
-		boardView = new BoardView(game, this, boardRenderer);
+		boardView = new BoardView(game, this, boardRenderer, togglePainter);
 
 		PauseButton pauseButton = new PauseButton(10, 10, this, game::togglePause);
 		game.registerPauseObserver(pauseButton::setPaused);
@@ -54,7 +61,9 @@ public class GameOfLifeApplet extends PApplet {
 			new LabeledButton(10, 100, "Randomize", this, game::randomize),
 			new LabeledButton(10, 130, "Center View", this, boardView::reset),
 			new LabeledButton(10, 195, "Clear", this, game::clear),
-			new LabeledButton(10, 225, "Save", this, game::save)
+			new LabeledButton(10, 225, "Save", this, game::save),
+			new LabeledButton(10, 255, "Fill", this, this::setFillPainter),
+			new LabeledButton(10, 285, "Paint", this, this::setTogglePainter)
 		));
 
 		speedSlider = new Slider(10, 160, this, game::setSpeed);
@@ -143,7 +152,17 @@ public class GameOfLifeApplet extends PApplet {
 		case 'r' -> game.resetBoard();
 		case 'q' -> game.randomize();
 		case 's' -> game.save();
+		case 'f' -> setFillPainter();
+		case 'p' -> setTogglePainter();
 		case BACKSPACE -> game.clear();
 		}
+	}
+
+	private void setFillPainter() {
+		boardView.setPainter(fillPainter);
+	}
+
+	private void setTogglePainter() {
+		boardView.setPainter(togglePainter);
 	}
 }

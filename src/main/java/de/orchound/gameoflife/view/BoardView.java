@@ -2,6 +2,7 @@ package de.orchound.gameoflife.view;
 
 import de.orchound.gameoflife.MouseInputEvent;
 import de.orchound.gameoflife.model.Game;
+import de.orchound.gameoflife.painting.Painter;
 import org.joml.*;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -12,8 +13,7 @@ import java.lang.Math;
 public class BoardView {
 
 	private final PApplet sketch;
-	private final Game game;
-	private final Painter painter;
+	private Painter painter;
 	private final BoardRenderer boardRenderer;
 
 	private float scale;
@@ -30,11 +30,9 @@ public class BoardView {
 	private final Vector2f bufferVector2f = new Vector2f();
 	private final Vector2i bufferVector2i = new Vector2i();
 
-	public BoardView(Game game, PApplet sketch, BoardRenderer renderer) {
-		this.game = game;
-		painter = new Painter(game);
+	public BoardView(Game game, PApplet sketch, BoardRenderer renderer, Painter painter) {
 		this.boardRenderer = renderer;
-
+		this.painter = painter;
 		windowSize = new Vector2i(sketch.sketchWidth(), sketch.sketchHeight());
 		viewOffset = new Vector2f(windowSize).div(2f);
 
@@ -83,7 +81,7 @@ public class BoardView {
 
 		if (inputEvent.isPressed() && inputEvent.getLeftKey()) {
 			Vector2ic cell = getCellByMousePosition(inputEvent.getMouseX(), inputEvent.getMouseY());
-			painter.paintOrEraseCell(cell);
+			painter.paint(cell);
 			inputEvent.consume();
 		}
 
@@ -94,7 +92,7 @@ public class BoardView {
 
 		if (inputEvent.isDragged() && inputEvent.getLeftKey()) {
 			Vector2ic cell = getCellByMousePosition(inputEvent.getMouseX(), inputEvent.getMouseY());
-			painter.paintOrEraseCell(cell);
+			painter.paint(cell);
 			inputEvent.consume();
 		}
 
@@ -118,5 +116,9 @@ public class BoardView {
 	public void reset() {
 		viewOffset.set(windowSize).div(2f);
 		scale = getInitialScale();
+	}
+
+	public void setPainter(Painter painter) {
+		this.painter = painter;
 	}
 }

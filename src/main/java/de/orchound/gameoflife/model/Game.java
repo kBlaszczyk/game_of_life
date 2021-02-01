@@ -98,11 +98,21 @@ public class Game {
 		}
 	}
 
+	public void setCellSilently(Vector2ic cell, boolean resurrect) {
+		if (cellInBoardRange(cell) && getCellStatus(cell) != resurrect) {
+			if (resurrect) {
+				board.resurrectCell(cell.y(), cell.x());
+			} else {
+				board.killCell(cell.y(), cell.x());
+			}
+		}
+	}
+
 	public boolean getCellStatus(Vector2ic cell) {
 		return cellInBoardRange(cell) && board.getCellStatus(cell.y(), cell.x());
 	}
 
-	private boolean cellInBoardRange(Vector2ic cell) {
+	public boolean cellInBoardRange(Vector2ic cell) {
 		return Math.min(cell.x(), cell.y()) >= 0
 			&& cell.x() < board.getWidth()
 			&& cell.y() < board.getHeight();
@@ -118,7 +128,6 @@ public class Game {
 		for (int i = 0; i < board.target.length; i++) {
 			board.target[i] = random.nextBoolean();
 		}
-
 		board.makeCurrentStateInitial();
 		gameTimeAccumulator = 0;
 		notifyBoardDataObservers();
@@ -139,10 +148,14 @@ public class Game {
 		observer.accept(board.target);
 	}
 
-	public void notifyBoardDataObservers() {
+	private void notifyBoardDataObservers() {
 		for (Consumer<boolean[]> observer : boardDataObservers) {
 			observer.accept(board.target);
 		}
+	}
+
+	public void stateChangeComplete() {
+		notifyBoardDataObservers();
 	}
 
 	public void registerPauseObserver(Consumer<Boolean> observer) {

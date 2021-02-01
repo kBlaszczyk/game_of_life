@@ -1,27 +1,28 @@
-package de.orchound.gameoflife.view;
+package de.orchound.gameoflife.painting;
 
 import de.orchound.gameoflife.model.Game;
 import org.joml.Vector2ic;
 
-public class Painter {
+public class TogglePainter implements Painter {
 
 	private final Game game;
 	private boolean currentlyPainting = false;
 	private boolean paintMode = false;
 
-	public Painter(Game game) {
+	public TogglePainter(Game game) {
 		this.game = game;
 	}
 
-	public void paintOrEraseCell(Vector2ic cell) {
+	@Override
+	public void paint(Vector2ic cell) {
 		if (!currentlyPainting) {
 			paintMode = !game.getCellStatus(cell);
 			currentlyPainting = true;
 		}
-
 		game.setCell(cell, paintMode);
 	}
 
+	@Override
 	public void stopPainting() {
 		currentlyPainting = false;
 	}

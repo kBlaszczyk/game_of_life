@@ -2,6 +2,7 @@ package de.orchound.gameoflife.view;
 
 import de.orchound.gameoflife.MouseInputEvent;
 import de.orchound.gameoflife.model.Game;
+import de.orchound.gameoflife.painting.Painter;
 import org.joml.Vector2i;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,9 @@ class BoardViewTest {
 	@Mock
 	private BoardRenderer boardRenderer;
 
+	@Mock
+	private Painter painter;
+
 	@Spy
 	private final Game game = new Game(10, 5);
 
@@ -35,7 +39,7 @@ class BoardViewTest {
 	public void setUp() {
 		when(sketch.createImage(10, 5, PConstants.RGB))
 			.thenReturn(new PImage(10, 5));
-		boardView = new BoardView(game, sketch, boardRenderer);
+		boardView = new BoardView(game, sketch, boardRenderer, painter);
 	}
 
 	@Test
@@ -46,6 +50,6 @@ class BoardViewTest {
 		inputEvent.setMousePosition(0, 0);
 
 		boardView.handleMouseInput(inputEvent);
-		verify(game).toggleCell(ArgumentMatchers.eq(new Vector2i(5, 2)));
+		verify(painter).paint(ArgumentMatchers.eq(new Vector2i(5, 2)));
 	}
 }
